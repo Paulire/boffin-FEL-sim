@@ -1,6 +1,6 @@
 # BOFFIN - FEL modeling softwear
 
- Usage: ./a.out [options] file...
+ Usage: boffin [options] file...
 
  Options:
  * -v	 display infomation while running model
