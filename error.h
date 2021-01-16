@@ -1,0 +1,35 @@
+#ifndef STDIO_H
+#define STDIO_H
+#include <stdio.h>
+#endif
+#ifndef STDLIB_H
+#define STDLIB_H
+#include <stdlib.h>
+#endif
+
+void _err_( int index )
+{
+	printf(" E: ");
+	switch (index) {
+		case 1:
+			printf("No input arguments");
+			printf("\n Try boffin --help");
+			break;
+		case 2:
+			printf("No input file");
+			break;
+		case 3:
+			printf("No output file after -o");
+			break;
+		case 4:
+			printf("Error 2 input files");
+			break;
+		case 5:
+			printf("Input file not found");
+			break;
+	}
+
+	printf("\n");
+
+	exit(0);
+}

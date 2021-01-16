@@ -1,0 +1,5 @@
+
+dir init
+ - Contains files for start up operations
+ 	arg_handle.h	|	Handles input arguments
+	flags.h		|	Flags for run time opperation are set here as global verlibles
