@@ -27,6 +27,12 @@ void _err_( int index )
 		case 5:
 			printf("Input file not found");
 			break;
+		case 6:
+			printf("Unexpected '=' in input file");
+			break;
+		case 7:
+			printf("Unexpected ';' in input file");
+			break;
 	}
 
 	printf("\n");
