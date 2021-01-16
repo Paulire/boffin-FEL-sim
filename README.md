@@ -1,4 +1,4 @@
-# BOFFIN - FEL modeling softwear
+# BOFFIN - BDF One dimentianal FEL INtergrator
 
  Usage: boffin [options] file...
 
