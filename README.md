@@ -10,7 +10,12 @@ git clone https://github.com/Paulire/boffin-FEL-sim
 cd boffin-FEL-sim
 sudo ./install
 ```
-Requires gcc to be installed.
+Requires ''gcc'' and ''gsl'' to be installed:
+
+Debian/Ubuntu 
+```
+sudo apt-get install gcc gsl-bin
+```
 
 ## Manual
  Usage: boffin [options] file...
