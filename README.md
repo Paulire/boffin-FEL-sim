@@ -1,6 +1,8 @@
 # BOFFIN - BDF One dimentianal FEL INtergrator
 
-## Installing (GNU/Linux)
+## Installing
+
+###### GNU/Linux
 
 In a terminal, run the following commands:
 
