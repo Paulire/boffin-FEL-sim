@@ -4,6 +4,7 @@
 Linux:
 
 ```
+cd ~/Downloads/
 git clone https://github.com/Paulire/boffin-FEL-sim
 cd boffin-FEL-sim
 sudo ./install
