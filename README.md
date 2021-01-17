@@ -2,7 +2,7 @@
 
 ## Installing
 
-###### GNU/Linux
+#### GNU/Linux
 
 In a terminal, run the following commands:
 
@@ -14,7 +14,6 @@ sudo ./install
 ```
 Requires ''gcc'' and ''gsl'' to be installed:
 
-Debian/Ubuntu etc.
 ```
 sudo apt-get install gcc gsl-bin
 ```
