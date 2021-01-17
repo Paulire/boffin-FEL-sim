@@ -1,7 +1,8 @@
 # BOFFIN - BDF One dimentianal FEL INtergrator
 
 ## Installing
-Linux:
+###GNU/Linux
+In a terminal, run the following commands:
 
 ```
 cd ~/Downloads/
@@ -9,6 +10,7 @@ git clone https://github.com/Paulire/boffin-FEL-sim
 cd boffin-FEL-sim
 sudo ./install
 ```
+Requires gcc to be installed.
 
 ## Manual
  Usage: boffin [options] file...
