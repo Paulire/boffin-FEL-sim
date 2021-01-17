@@ -62,5 +62,6 @@ void set_data( struct intergrator_input *fel_val) {
 	} else if( strcmp( (char*)buff_arg, "z_f") == 0 ) { fel_val->z_f= atof(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "a_0") == 0 ) { fel_val->a_0 = atof(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "phi_0") == 0 ) { fel_val->phi_0 = atof(buff_num); 
+	} else if( strcmp( (char*)buff_arg, "z_num") == 0 ) { fel_val->z_num = atoi(buff_num); 
 	}
 }

@@ -29,22 +29,34 @@ int main( int argc, char *argv[])
 	arg_handle( argc, argv);
 
 	// File Handle
-	struct intergrator_input test;	
-	read_from_config( in_file, &test);
+	struct intergrator_input fel_input_data;	
+	read_from_config( in_file, &fel_input_data);
 
-	printf("N_theta = %d\n", test.N_theta);
-	printf("N_p = %d\n", test.N_p);
-	printf("off_p = %lf\n", test.off_p);
-	printf("sigma = %lf\n", test.sigma);
-	printf("z_0 = %lf\n", test.z_0);
-	printf("z_f = %lf\n", test.z_f);
-	printf("a_0 = %lf\n", test.a_0);
-	printf("phi_0 = %lf\n", test.phi_0);
+	// Alocates memeory for integration data
+	int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
+	float *z_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
+	float *phi_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
 
+
+	// Sets values for integration data
+	phi_vals[0] = fel_input_data.phi_0;
+
+	for( int i=0; i<fel_input_data.z_num; i++)
+	{
+		z_vals[i] = i*(fel_input_data.z_f)/fel_input_data.z_num;
+	}
+
+
+	printf("%f\n", z_vals[50]);
 
 	// Integrator
 	call_me("Inter\n");
 
+	// Return memory for input data
+	free(z_vals);
+	free(phi_vals);
+
 	return 0;
 }
+
 
