@@ -1,5 +1,12 @@
 # BOFFIN - BDF One dimentianal FEL INtergrator
 
+## Installing
+Linux:
+	```git clone https://github.com/Paulire/boffin-FEL-sim```
+	```cd boffin-FEL-sim```
+	```sudo ./install```
+
+## Manual
  Usage: boffin [options] file...
 
  Options:
