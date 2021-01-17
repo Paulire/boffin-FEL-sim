@@ -14,8 +14,15 @@ sudo ./install
 ```
 Requires ''gcc'' and ''gsl'' to be installed:
 
+###### Debian/Ubuntu etc.
 ```
 sudo apt-get install gcc gsl-bin
+```
+
+###### Arch/Manjaro etc.
+```
+pacman -S gcc
+pacman -S gsl-bin
 ```
 
 ## Manual
