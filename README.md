@@ -12,7 +12,7 @@ sudo ./install
 ```
 Requires ''gcc'' and ''gsl'' to be installed:
 
-Debian/Ubuntu 
+Debian/Ubuntu etc.
 ```
 sudo apt-get install gcc gsl-bin
 ```
