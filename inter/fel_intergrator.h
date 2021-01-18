@@ -1,3 +1,3 @@
 
 
-void boffin_solve( int, int, float *, float *, float *, float *, float *);
+void boffin_solve( int, int, float *, float *, float *, float **, float **);
