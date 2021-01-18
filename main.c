@@ -48,14 +48,12 @@ int main( int argc, char *argv[])
 
 	for( int i=0; i<=fel_input_data.z_num; i++)
 	{
-		z_vals[i] = i*(fel_input_data.z_f)/fel_input_data.z_num;
+		z_vals[i] = fel_input_data.z_0+i*( fel_input_data.z_f - fel_input_data.z_0 )/fel_input_data.z_num;
 	}
 
 
-	printf("%f\n", z_vals[100]);
-
 	// Integrator
-	call_me("Inter\n");
+	boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals);
 
 	// Return memory for input data
 	free(z_vals);

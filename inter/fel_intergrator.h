@@ -1,3 +1,3 @@
 
 
-void call_me( char* );
+void boffin_solve( int, int, float *, float *, float *, float *, float *);
