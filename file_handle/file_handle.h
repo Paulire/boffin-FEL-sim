@@ -4,3 +4,5 @@
 #endif
 
 void read_from_config( char *, struct intergrator_input * );
+
+void write_to_csv(  char *, float *, float *, int );

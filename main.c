@@ -51,8 +51,11 @@ int main( int argc, char *argv[])
 	a_vals[0] = fel_input_data.a_0;
 	phi_vals[0] = fel_input_data.phi_0;
 
-	for( int i=0; i<=fel_input_data.z_num; i++) {
-		z_vals[i] = fel_input_data.z_0+i*( fel_input_data.z_f - fel_input_data.z_0 )/fel_input_data.z_num;
+	for( int i=0; i<fel_input_data.z_num; i++) {
+		z_vals[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
+		printf("%f\n",z_vals[i]);
+
+		a_vals[i] = (float) i;
 	}
 
 	const float theta_const = 2*PI / ( fel_input_data.N_theta+1 );
@@ -71,6 +74,8 @@ int main( int argc, char *argv[])
 
 	// Integrator
 	boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
+
+	write_to_csv( out_file, z_vals, a_vals, fel_input_data.z_num );
 
 	// Return memory for input data
 	free(z_vals);

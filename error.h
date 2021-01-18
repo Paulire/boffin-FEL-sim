@@ -25,7 +25,7 @@ void _err_( int index )
 			printf("Error 2 input files");
 			break;
 		case 5:
-			printf("Input file not found");
+			printf("Input file not found/forbidden");
 			break;
 		case 6:
 			printf("Unexpected '=' in input file");
@@ -33,6 +33,8 @@ void _err_( int index )
 		case 7:
 			printf("Unexpected ';' in input file");
 			break;
+		case 8:
+			printf("Output file not found/forbidden");
 	}
 
 	printf("\n");
