@@ -56,6 +56,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 
 void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, float *restrict phi_val, float **restrict theta_vals, float **restrict p_vals, int ELECTRON_NUM, int z_point )
 {
+	/* switch for char /*
 	char str[50] = {'\0'};
 	FILE *fp;
 
