@@ -51,17 +51,17 @@ int main( int argc, char *argv[])
 	a_vals[0] = fel_input_data.a_0;
 	phi_vals[0] = fel_input_data.phi_0;
 
+	
+	// Set z to linspace z_0->z_f in steps of z_sets
 	for( int i=0; i<fel_input_data.z_num; i++) {
 		z_vals[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
-		printf("%f\n",z_vals[i]);
-
-		a_vals[i] = (float) i;
 	}
 
-	const float theta_const = 2*PI / ( fel_input_data.N_theta+1 );
-
+	// Creates energy spread for each electrion, repeats for each theta assigning value for each electron pread
+	const float theta_const = 2*PI / ( fel_input_data.N_theta );
 	for( int i=0; i<fel_input_data.N_theta; i++) {
 		float theta_point = i*theta_const;
+		printf("%f\n", theta_point);
 		for( int e=0; e<fel_input_data.N_p; e++) {
 			int index = fel_input_data.N_p*i+e;
 			theta_vals[ index ] = malloc( fel_input_data.z_num*sizeof(float) );
@@ -73,16 +73,18 @@ int main( int argc, char *argv[])
 	}
 
 	// Integrator
-	boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
+	// boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
 
-	write_to_csv( out_file, z_vals, a_vals, fel_input_data.z_num );
+	// Write ansers to file
+	write_to_csv( out_file, z_vals, a_vals, fel_input_data.z_num, theta_vals, p_vals, ELECTRON_NUM );
 
 	// Return memory for input data
-	free(z_vals);
-	free(phi_vals);
-	free(a_vals);
-
+	free( z_vals );
+	free( phi_vals );
+	free( a_vals );
+	for( int i=0; i<ELECTRON_NUM-10; i++) {
+		free( theta_vals[i] );
+		free( p_vals[i] );
+	}
 	return 0;
 }
-
-

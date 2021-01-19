@@ -53,7 +53,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	fclose(fp);
 }
 
-void write_to_csv(  char *name, float *z_val, float *a_val, int z_point)
+void write_to_csv(  char *name, float *z_val, float *a_val, int z_point, float **theta_vals, float **p_vals, int ELECTRON_NUM)
 {
 	char str[50];
 	FILE *fp;
@@ -75,6 +75,27 @@ void write_to_csv(  char *name, float *z_val, float *a_val, int z_point)
 		sprintf(str, "%f", a_val[i]);
 		fputs( str, fp );
 		fputc( ',', fp );
+	}
+
+	// Repeats for each electron then writes each theta(z) value
+	fputc( '\n', fp);
+	for( int i=0; i<ELECTRON_NUM; i++) {
+		for( int e=0; e<z_point; e++ ) {
+			sprintf(str, "%f", theta_vals[i][e]);
+			fputs( str, fp );
+			fputc( ',', fp );
+		}
+		fputc( '\n', fp);
+	}
+
+	// Repeats for each electron and writes each p(z) value
+	for( int i=0; i<ELECTRON_NUM; i++) {
+		for( int e=0; e<z_point; e++ ) {
+			sprintf(str, "%f", p_vals[i][e]);
+			fputs( str, fp );
+			fputc( ',', fp );
+		}
+		fputc( '\n', fp);
 	}
 
 	fclose( fp );
