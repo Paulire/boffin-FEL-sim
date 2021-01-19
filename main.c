@@ -40,11 +40,11 @@ int main( int argc, char *argv[])
 
 	// Alocates memeory for integration data
 	int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
-	float *restrict z_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float *restrict phi_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float *restrict a_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float **restrict theta_vals = (float **)malloc( ELECTRON_NUM * sizeof( float * ));
-	float **restrict p_vals = (float **)malloc( ELECTRON_NUM * sizeof( float * ));
+	float *restrict z_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
+	float *restrict phi_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
+	float *restrict a_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
+	float **restrict theta_vals = ( float **) malloc( ELECTRON_NUM * sizeof( float * ));
+	float **restrict p_vals = ( float **) malloc( ELECTRON_NUM * sizeof( float * ));
 
 
 	// Sets values for integration data
@@ -60,8 +60,8 @@ int main( int argc, char *argv[])
 	// Cold beam settup 
 	for( int i=0; i<ELECTRON_NUM; i++) {
 		// Alocate memory for each electn through z
-		theta_vals[i] = (float *)malloc( fel_input_data.z_num*sizeof( float ) );
-		p_vals[i] = (float *)malloc( fel_input_data.z_num*sizeof( float ) );
+		theta_vals[i] = ( float *) malloc( fel_input_data.z_num*sizeof( float ) );
+		p_vals[i] = ( float *) malloc( fel_input_data.z_num*sizeof( float ) );
 
 		theta_vals[ i ][0] = 1; //i*2*PI/ELECTRON_NUM;
 		p_vals[ i ][0] = 2;
