@@ -53,7 +53,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	fclose(fp);
 }
 
-void write_to_csv(  char *name, float *z_val, float *a_val, int z_point, float **theta_vals, float **p_vals, int ELECTRON_NUM)
+void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, int z_point, float **restrict theta_vals, float **restrict p_vals, int ELECTRON_NUM)
 {
 	char str[50];
 	FILE *fp;

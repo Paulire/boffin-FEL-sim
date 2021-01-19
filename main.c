@@ -40,11 +40,11 @@ int main( int argc, char *argv[])
 
 	// Alocates memeory for integration data
 	int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
-	float *z_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float *phi_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float *a_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
-	float **theta_vals = malloc( ELECTRON_NUM*sizeof(float) );
-	float **p_vals = malloc( ELECTRON_NUM*sizeof(float) );
+	float *restrict z_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
+	float *restrict phi_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
+	float *restrict a_vals = (float*)malloc( fel_input_data.z_num*sizeof(float) );
+	float **restrict theta_vals = malloc( ELECTRON_NUM*sizeof(float) );
+	float **restrict p_vals = malloc( ELECTRON_NUM*sizeof(float) );
 
 
 	// Sets values for integration data
