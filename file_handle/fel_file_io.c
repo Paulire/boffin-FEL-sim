@@ -1,4 +1,5 @@
 /* For reaiding and interpriting files */
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 
 #include "file_handle.h"
 #include <stdio.h>
@@ -53,7 +54,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	fclose(fp);
 }
 
-void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, int z_point, float **restrict theta_vals, float **restrict p_vals, int ELECTRON_NUM)
+void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, float *restrict phi_val, float **restrict theta_vals, float **restrict p_vals, int ELECTRON_NUM, int z_point )
 {
 	char str[50];
 	FILE *fp;
@@ -66,37 +67,45 @@ void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, in
 	for( int i=0; i<z_point; i++) {
 		sprintf(str, "%f", z_val[i]);
 		fputs( str, fp );
-		fputc( ',', fp );
+		fputs( ",", fp );
 	}
 
 	// Write each a_z value to line 2
-	fputc( '\n', fp);
+	fputs( "\n", fp );
 	for( int i=0; i<z_point; i++) {
 		sprintf(str, "%f", a_val[i]);
 		fputs( str, fp );
-		fputc( ',', fp );
+		fputs( ",", fp );
+	}
+
+	// Write each a_z value to line 3
+	fputs( "\n", fp );
+	for( int i=0; i<z_point; i++) {
+		sprintf(str, "%f", phi_val[i]);
+		fputs( str, fp );
+		fputs( ",", fp );
 	}
 
 	// Repeats for each electron then writes each theta(z) value
-	fputc( '\n', fp);
+	fputs( "\n", fp );
 	for( int i=0; i<ELECTRON_NUM; i++) {
 		for( int e=0; e<z_point; e++ ) {
 			sprintf(str, "%f", theta_vals[i][e]);
 			fputs( str, fp );
-			fputc( ',', fp );
+			fputs( ",", fp );
 		}
-		fputc( '\n', fp);
+		fputs( "\n", fp );
 	}
 
 	// Repeats for each electron and writes each p(z) value
-	for( int i=0; i<ELECTRON_NUM; i++) {
+	/*for( int i=0; i<ELECTRON_NUM; i++) {
 		for( int e=0; e<z_point; e++ ) {
 			sprintf(str, "%f", p_vals[i][e]);
 			fputs( str, fp );
-			fputc( ',', fp );
+			fputs( ",", fp );
 		}
-		fputc( '\n', fp);
-	}
+		fputs( "\n", fp );
+	}*/
 
 	fclose( fp );
 }
