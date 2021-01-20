@@ -9,6 +9,8 @@
 #include <string.h>
 #endif
 
-bool should_print = true; 
-char * in_file = "\0";
-char * out_file = "output.csv";
+// These flags are spesiffic to this BOFfIn interface not the BOFfIn Integrator!!!
+struct input_flags {
+		char in_file[20];
+		char out_file[20];
+};

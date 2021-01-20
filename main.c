@@ -1,5 +1,14 @@
 // Loads flags first
+
+#ifndef BOFFIN_FLAGS_H
+#define BOFFIN_FLAGS_H
+#include "boffin/boffin_flags.h"
+#endif
+
+#ifndef FLAGS_H
+#define FLAGS_H
 #include "init/flags.h"
+#endif
 
 #define PI 3.14159265358979
 
@@ -7,7 +16,7 @@
 #include "file_handle/file_handle.h"
 #ifndef FEL_INTERGRATOR_H
 #define FEL_INTERGRATOR_H
-#include "inter/fel_intergrator.h"
+#include "boffin/fel_intergrator.h"
 #endif
 
 #ifndef FEL_INPUT_STRUC_H
@@ -30,12 +39,16 @@
 
 int main( int argc, char *argv[])
 {
+	// Flag sets
+	struct input_flags in_flags;
+	struct boffin_flags bffn_flags;
+	
 	// Handles input
-	arg_handle( argc, argv);
+	arg_handle( argc, argv, &bffn_flags, &in_flags );
 
 	// File Handle
 	struct intergrator_input fel_input_data;	
-	read_from_config( in_file, &fel_input_data);
+	read_from_config( in_flags.in_file, &fel_input_data);
 
 
 	// Alocates memeory for integration data
@@ -71,7 +84,7 @@ int main( int argc, char *argv[])
 	//boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
 
 	// Write ansers to file
-	write_to_csv( out_file, z_vals, a_vals, phi_vals, theta_vals, p_vals, ELECTRON_NUM, fel_input_data.z_num);
+	write_to_csv( in_flags.out_file, z_vals, a_vals, phi_vals, theta_vals, p_vals, ELECTRON_NUM, fel_input_data.z_num);
 
 	// Return memory for input data
 	free( z_vals );

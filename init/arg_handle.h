@@ -1,5 +1,15 @@
 /* This file sets the input arguments for the program and also suplys the help pages */
 
+#ifndef BOFFIN_FLAGS_H
+#define BOFFIN_FLAGS_H
+#include "../boffin/boffin_flags.h"
+#endif
+
+#ifndef FLAGS_H
+#define FLAGS_H
+#include "flags.h"
+#endif
+
 #ifndef ERROR_H
 #define ERROR_H
 #include "error.h"
@@ -8,13 +18,18 @@
 void info_help( void );
 void info_help_advance( void );
 
-void arg_handle( int argc, char *argv[])
+void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
 {
 
 	// If no input then error
 	if( argc == 1) {
 		_err_(1);
 	}
+
+	// Set default flags
+	BF->should_print = true;
+	strcpy( IF->in_file , "\0" ) ;
+	strcpy( IF->out_file , "output.csv" );
 
 	for( int i=1; i<argc; i++)
 	{
@@ -24,27 +39,27 @@ void arg_handle( int argc, char *argv[])
 		} else if(strcmp("--HELP", argv[i]) == 0 ) {
 			info_help_advance();
 		} else if(strcmp("-v", argv[i]) == 0 ) {
-			should_print = false;
+			BF->should_print = false;
 		} else if(strcmp("-i", argv[i]) == 0 ) {
 			if( argc == i+1 ) { _err_(2); }
-			in_file = argv[i+1];
+			strcpy( IF->in_file , argv[i+1] );
 			i++;
 		} else if(strcmp("-o", argv[i]) == 0 ) {
 			if( argc == i+1 ) { _err_(3); }
-			out_file = argv[i+1];
+			strcpy( IF->out_file , argv[i+1]);
 			i++;
 		}else {
-			if( strcmp("\0", in_file) != 0 && strcmp(argv[i], in_file) != 0 ) {
+			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
 				_err_(4);
 			}
-			in_file = argv[i];
+			strcpy( IF->in_file , argv[i]);
 		}
 	}
 }
 
 void info_help( void )
 {
-	printf(" Usage: ./a.out [options] file...\n\n");
+	printf(" Usage: boffin [options] file...\n\n");
 	printf(" Options:\n"); 
 	printf("\t-v\t display infomation while running model\n");
 	printf("\t-i\t input file (csv) - this is assumed if no argument is given\n");
@@ -56,7 +71,7 @@ void info_help( void )
 
 void info_help_advance( void )
 {
-	printf(" Usage: ./a.out [options] file...\n\n");
+	printf(" Usage: boffin [options] file...\n\n");
 	printf(" Options:\n"); 
 	printf("\t-v\t display infomation while running model\n");
 	printf("\t-i\t input file (csv) - this is assumed if no argument is given\n");
