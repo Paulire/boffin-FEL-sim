@@ -12,7 +12,7 @@ git clone https://github.com/Paulire/boffin-FEL-sim
 cd boffin-FEL-sim
 sudo ./install
 ```
-Requires ''gcc'' and ''gsl'' to be installed as well as ''Python3'', ''numpy'', ''matplotlib'' and ''python3-devs'' for plotting:
+Requires ''gcc'' and ''gsl'' to be installed for integration. For plotting ''Python3'', ''numpy'', ''matplotlib'' and ''python3-devs'' are required:
 
 ###### Debian/Ubuntu etc.
 ```
