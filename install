@@ -4,8 +4,8 @@
 mkdir /usr/local/lib/boffin
 
 
-gcc -O3 -DUSE_RESTRICT -g -fPIC -Wall -Wextra -pedantic ./file_handle/*.c -shared -o /usr/local/lib/boffin/file_handle.so
+gcc -O3 -DUSE_RESTRICT -g -fPIC -Wall ./file_handle/*.c -shared -o /usr/local/lib/boffin/file_handle.so
 
-gcc -O3 -DUSE_RESTRICT -g -fPIC -Wall -Wextra -pedantic ./inter/*.c -shared -o /usr/local/lib/boffin/fel_inter.so
+gcc -O3 -DUSE_RESTRICT -g -fPIC -Wall ./inter/*.c -shared -o /usr/local/lib/boffin/fel_inter.so
 
 gcc -O3 -DUSE_RESTRICT -g -Wall -o /usr/local/bin/boffin main.c /usr/local/lib/boffin/fel_inter.so /usr/local/lib/boffin/file_handle.so

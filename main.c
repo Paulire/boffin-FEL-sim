@@ -68,7 +68,7 @@ int main( int argc, char *argv[])
 	}
 
 	// Integrator
-	// boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
+	//boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
 
 	// Write ansers to file
 	write_to_csv( out_file, z_vals, a_vals, phi_vals, theta_vals, p_vals, ELECTRON_NUM, fel_input_data.z_num);
