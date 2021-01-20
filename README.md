@@ -1,4 +1,4 @@
-# BOFFIN - BDF One dimentianal FEL INtergrator
+# BOFfIn - BDF One dimentianal FEL INtergrator
 
 ## Installing
 
