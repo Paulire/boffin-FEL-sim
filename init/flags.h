@@ -11,6 +11,8 @@
 
 // These flags are spesiffic to this BOFfIn interface not the BOFfIn Integrator!!!
 struct input_flags {
-		char in_file[20];
-		char out_file[20];
+		char in_file[100];
+		char out_file[100];
+		bool plot_a;
+		bool plot_phi;
 };

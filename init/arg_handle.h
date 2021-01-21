@@ -10,6 +10,11 @@
 #include "flags.h"
 #endif
 
+#ifndef STDBOOL_H
+#define STDBOOL_H
+#include <stdbool.h>
+#endif
+
 #ifndef ERROR_H
 #define ERROR_H
 #include "error.h"
@@ -26,28 +31,43 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 		_err_(1);
 	}
 
-	// Set default flags
+	// Set default flags BOFfIn
 	BF->should_print = true;
+
+	// And input
 	strcpy( IF->in_file , "\0" ) ;
 	strcpy( IF->out_file , "output.csv" );
+	IF->plot_a = false;
+	IF->plot_phi = false;
 
 	for( int i=1; i<argc; i++)
 	{
 
 		if(strcmp("--help", argv[i]) == 0 ) {
 			info_help();
+
 		} else if(strcmp("--HELP", argv[i]) == 0 ) {
 			info_help_advance();
+
 		} else if(strcmp("-v", argv[i]) == 0 ) {
 			BF->should_print = false;
+
 		} else if(strcmp("-i", argv[i]) == 0 ) {
 			if( argc == i+1 ) { _err_(2); }
 			strcpy( IF->in_file , argv[i+1] );
 			i++;
+
 		} else if(strcmp("-o", argv[i]) == 0 ) {
 			if( argc == i+1 ) { _err_(3); }
 			strcpy( IF->out_file , argv[i+1]);
 			i++;
+		
+		} else if(strcmp("-ap", argv[i]) == 0) {
+			IF->plot_a = true;
+
+		} else if(strcmp("-pp", argv[i]) == 0) {
+			IF->plot_phi = true;
+
 		}else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
 				_err_(4);
