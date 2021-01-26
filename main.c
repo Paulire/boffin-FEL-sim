@@ -90,5 +90,12 @@ int main( int argc, char *argv[])
 	free( z_vals );
 	free( phi_vals );
 	free( a_vals );
+	for( int i=0; i<ELECTRON_NUM; i++) {
+		free( theta_vals[i] );
+		free( p_vals[i] );
+	}
+	free( theta_vals );
+	free( p_vals );
+
 	return 0;
 }

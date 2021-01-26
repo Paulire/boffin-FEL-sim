@@ -4,7 +4,7 @@
 
 #ifndef GSL_GSL_INTEGRATION_H
 #define GSL_GSL_INTEGRATION_H
-#include <gsl/gsl_integration_h>
+#include <gsl/gsl_integration.h>
 #endif
 
 #ifndef GSL_GSL_MATH_H
