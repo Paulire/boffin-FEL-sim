@@ -26,7 +26,7 @@
 /////////////////////////////////////////////
 // For arrays corisponding to input data:  //
 //	array[0] is a						   //
-//	array[1] is p						   //
+//	array[1] is phi						   //
 //	array[2] is thata					   //
 //  ...									   //
 //	array[2+N] is p						   //
@@ -37,8 +37,8 @@
 void sum_inter( double *restrict out, double *restrict in, int ELEC_NUM )
 {
 	for( int i=0; i<ELEC_NUM; i++ ) {
-		out[0] += (double)cos( in[ 2+i ] + in[0] );
-		out[1] += (double)sin( in[ 2+i ] + in[0] );
+		out[0] += (double)cos( in[ 2+i ] + in[1] );
+		out[1] += (double)sin( in[ 2+i ] + in[1] );
 	}
 
 	out[0] *= (double)1/ELEC_NUM;
@@ -56,7 +56,7 @@ int fel_ode( double x, const double y[], double f[], register void *params )
 		int p_i_val = 2+i+ELEC_NUM;
 		int t_i_val = 2+i;
 		f[ t_i_val ] = y[ p_i_val ];											// dthetadz = p
-		f[ p_i_val ] = -2*y[ p_i_val ]*cos( y[ t_i_val ] + y[2] );		// dpdz = -2a*cos( theta + phi )
+		f[ p_i_val ] = -2*y[ 0 ]*cos( y[ t_i_val ] + y[1] );		// dpdz = -2a*cos( theta + phi )
 	}
 
 	// Now for p and a
@@ -64,7 +64,7 @@ int fel_ode( double x, const double y[], double f[], register void *params )
 	sum_inter( cos_sin, y, ELEC_NUM );
 	
 	f[0] = (double)cos_sin[0];
-	f[1] = (double)(1/y[0])*(double)cos_sin[1];
+	f[1] = (double)(-1/y[0])*(double)cos_sin[1];
 	
 
 	return GSL_SUCCESS;
@@ -109,9 +109,11 @@ int fel_jac( double x, const double y[], double *dfdy, double dfdt[], void *para
 
 void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int Z_NUM )
 {
-	const gsl_odeiv_step_type * T = gsl_odeiv_step_bsimp;
+	// const gsl_odeiv_step_type * T = gsl_odeiv_step_bsimp;/* gsl_odeiv_step_rk8pd;*/
+	//const gsl_odeiv_step_type * T = gsl_odeiv_step_rk8pd;
+	const gsl_odeiv_step_type * T = gsl_odeiv_step_rkck;
 	gsl_odeiv_step * s = gsl_odeiv_step_alloc( T, 2+2*ELECTRON_NUM );
-	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-3, 1e-4 );
+	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-6, 0 );
 	gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc( 2+2*ELECTRON_NUM );
 
 	gsl_odeiv_system sys = { fel_ode, fel_jac, 2+2*ELECTRON_NUM, &ELECTRON_NUM };
@@ -121,7 +123,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	// Repeats for each z value, only these are recorded
 	for( int i=0; i<Z_NUM-1; i++ ) {
 		double z_i = z_data[ i ], z_step = z_data[ i+1 ];
-		double h = 1e-3;
+		double h = 1e-6;
 
 		//double y[ 2*ELECTRON_NUM+2 ] = fel_data_matrix[:][i];
 		for( int e=0; e< ( 2*ELECTRON_NUM+2 ); e++ ) {
@@ -133,7 +135,6 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 
 			if( status != GSL_SUCCESS ) { break; }
 
-		printf("%lf\t%lf\n\n", z_i, z_step);
 		}
 
 		for( int e=0; e<( 2*ELECTRON_NUM+2 ); e++ ) {
@@ -142,4 +143,6 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	}
 
 	free(y);
+	gsl_odeiv_step_free( s );
+	gsl_odeiv_control_free( c );
 }
