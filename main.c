@@ -66,19 +66,18 @@ int main( int argc, char *argv[])
 	// Set z to linspace z_0->z_f in steps of z_sets
 	for( int i=0; i<fel_input_data.z_num; i++) {
 		fel_z_input[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
-		fel_data_matrix[0][i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
 		fel_data_matrix[1][i] = 5;
 	}
 
 
 	// Cold beam settup 
 	for( int i=0; i<ELECTRON_NUM; i++) {
-		fel_data_matrix[ i+2 ][0] = 1; //i*2*PI/ELECTRON_NUM;
-		fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 2;
+		fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
+		fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
 	}
 
 	// Integrator
-	//boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
+	boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
 
 	// Write ansers to file
 	write_to_csv( in_flags.out_file, fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
