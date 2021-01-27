@@ -5,4 +5,4 @@
 
 void read_from_config( char *, struct intergrator_input * );
 
-void write_to_csv(  char *, float *, float *, float *, float **, float **, int, int);
+void write_to_csv(  char *, double *, double**, int, int);

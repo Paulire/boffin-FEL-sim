@@ -10,8 +10,8 @@
 #endif
 
 // Data verlibles
-char buff_arg[20] = { '\0' };	// buffers for the command and the name
-char buff_num[20] = { '\0' };
+char buff_arg[100] = { '\0' };	// buffers for the command and the name
+char buff_num[100] = { '\0' };
 
 void set_data( struct intergrator_input *, int line );
 
@@ -65,7 +65,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	fclose(fp);
 }
 
-void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, float *restrict phi_val, float **restrict theta_vals, float **restrict p_vals, int ELECTRON_NUM, int z_point )
+void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, int ELECTRON_NUM, int z_point )
 {
 	FILE *fp;
 
@@ -75,47 +75,19 @@ void write_to_csv(  char *name, float *restrict z_val, float *restrict a_val, fl
 
 	// Write each z value to line 1
 	for( int i=0; i<z_point; i++) {
-		snprintf(buff_arg, sizeof(buff_arg), "%f", z_val[i]);
+		snprintf(buff_arg, sizeof(buff_arg), "%lf", z_val[i]);
 		fputs( buff_arg, fp );
 		fputs( ",", fp );
 	}
 
-	// Write each a_z value to line 2
-	fputs( "\n", fp );
-	for( int i=0; i<z_point; i++) {
-		snprintf(buff_arg, sizeof(buff_arg), "%f", a_val[i]);
-		fputs( buff_arg, fp );
-		fputs( ",", fp );
-	}
-
-	// Write each a_z value to line 3
-	fputs( "\n", fp );
-	for( int i=0; i<z_point; i++) {
-		snprintf(buff_arg,sizeof(buff_arg), "%f", phi_val[i]);
-		fputs( buff_arg, fp );
-		fputs( ",", fp );
-	}
-
-
-	// Repeats for each electron then writes each theta(z) value
-	fputs( "\n", fp );
-	for( int i=0; i<ELECTRON_NUM; i++) {
+	for( int i=0; i<2*ELECTRON_NUM+2; i++ ) {
+		fputs( "\n", fp );		
+		
 		for( int e=0; e<z_point; e++ ) {
-			snprintf(buff_arg,sizeof(buff_arg), "%f", theta_vals[i][e]);
+			snprintf( buff_arg, sizeof( buff_arg ), "%lf", out_data_val[i][e] );
 			fputs( buff_arg, fp );
 			fputs( ",", fp );
 		}
-		fputs( "\n", fp );
-	}
-
-	// Repeats for each electron and writes each p(z) value
-	for( int i=0; i<ELECTRON_NUM; i++) {
-		for( int e=0; e<z_point; e++ ) {
-			snprintf(buff_arg,sizeof(buff_arg), "%f", p_vals[i][e]);
-			fputs( buff_arg, fp );
-			fputs( ",", fp );
-		}
-		fputs( "\n", fp );
 	}
 
 	fclose( fp );

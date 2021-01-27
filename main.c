@@ -53,49 +53,42 @@ int main( int argc, char *argv[])
 
 	// Alocates memeory for integration data
 	int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
-	float *restrict z_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
-	float *restrict phi_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
-	float *restrict a_vals = ( float*) malloc( fel_input_data.z_num * sizeof( float) );
-	float **restrict theta_vals = ( float **) malloc( ELECTRON_NUM * sizeof( float * ));
-	float **restrict p_vals = ( float **) malloc( ELECTRON_NUM * sizeof( float * ));
-
+	double *restrict fel_z_input = ( double * ) malloc( fel_input_data.z_num * sizeof( double ));
+	double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
+	for( int i=0; i<2*ELECTRON_NUM+2; i++) {
+		fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
+	}
 
 	// Sets values for integration data
-	a_vals[0] = fel_input_data.a_0;
-	phi_vals[0] = fel_input_data.phi_0;
-	
+	fel_data_matrix[0][0] = fel_input_data.a_0;
+	fel_data_matrix[1][0] = fel_input_data.phi_0;
+
 	// Set z to linspace z_0->z_f in steps of z_sets
 	for( int i=0; i<fel_input_data.z_num; i++) {
-		z_vals[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
-		phi_vals[i] = 5;
+		fel_z_input[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
+		fel_data_matrix[0][i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
+		fel_data_matrix[1][i] = 5;
 	}
+
 
 	// Cold beam settup 
 	for( int i=0; i<ELECTRON_NUM; i++) {
-		// Alocate memory for each electn through z
-		theta_vals[i] = ( float *) malloc( fel_input_data.z_num*sizeof( float ) );
-		p_vals[i] = ( float *) malloc( fel_input_data.z_num*sizeof( float ) );
-
-		theta_vals[ i ][0] = 1; //i*2*PI/ELECTRON_NUM;
-		p_vals[ i ][0] = 2;
+		fel_data_matrix[ i+2 ][0] = 1; //i*2*PI/ELECTRON_NUM;
+		fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 2;
 	}
 
 	// Integrator
 	//boffin_solve( fel_input_data.z_num, ELECTRON_NUM, z_vals, a_vals, phi_vals, theta_vals, p_vals);
 
 	// Write ansers to file
-	write_to_csv( in_flags.out_file, z_vals, a_vals, phi_vals, theta_vals, p_vals, ELECTRON_NUM, fel_input_data.z_num);
+	write_to_csv( in_flags.out_file, fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
 
 	// Return memory for input data
-	free( z_vals );
-	free( phi_vals );
-	free( a_vals );
-	for( int i=0; i<ELECTRON_NUM; i++) {
-		free( theta_vals[i] );
-		free( p_vals[i] );
+	for( int i=0; i<2*ELECTRON_NUM+2; i++ ) {
+		free( fel_data_matrix[i] );
 	}
-	free( theta_vals );
-	free( p_vals );
+	free( fel_data_matrix );
+	free( fel_z_input );
 
 	return 0;
 }
