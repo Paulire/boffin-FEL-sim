@@ -70,6 +70,7 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 
 		}else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
+				printf(" What is '%s'\n", argv[i]);
 				_err_(4);
 			}
 			strcpy( IF->in_file , argv[i]);

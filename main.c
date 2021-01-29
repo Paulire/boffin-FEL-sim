@@ -88,6 +88,24 @@ int main( int argc, char *argv[])
 	}
 	free( fel_data_matrix );
 	free( fel_z_input );
+	
+	// Plot if needed. 
+	char pltcmdbuff[200];
+
+	#pragma GCC diagnostic ignored "-Wunused-variable"
+	if( in_flags.plot_a == true) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -a &", in_flags.out_file );
+		int null = system( pltcmdbuff );
+	}
+
+	if( in_flags.plot_phi == true) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -phi &", in_flags.out_file );
+		int null = system( pltcmdbuff );
+	}
+
+	//if( in_flags.plt_pha == true) {
+		// snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha &", in_fla
+	// }
 
 	return 0;
 }

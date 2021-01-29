@@ -22,7 +22,7 @@ void _err_( int index )
 			printf("No output file after -o");
 			break;
 		case 4:
-			printf("Error 2 input files");
+			printf("Unknown argument");
 			break;
 		case 5:
 			printf("Input file not found/forbidden");
