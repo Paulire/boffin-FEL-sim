@@ -23,9 +23,19 @@ sudo apt-get install gcc gsl-bin python3 python3-devs python3-matplotlib python3
  Usage: boffin [options] file...
 
  Options:
- * ''-v''	 display infomation while running model
- * ''-i''	 input file - this is assumed if no argument is given
- * ''-o''	 data output file (csv)
- * ''-ap''  plot a(z) values
- * ''-pp'' plot phi(z) values
- * ''-pha [z]'' plot phase space at z value
+ * -i	 input file - this is assumed if no argument is given
+ * -o	 data output file (csv)
+ * -ap  plot a(z) values
+ * -pp plot phi(z) values
+ * -pha [z] plot phase space at z value (NOT YET IMPLEMENTED)
+ 
+ Input File Syntax:
+ COMMAND = VALUE;
+ * ```N_theta```  The number of theta points between 0 and 2pi.
+ * ```N_p```      The number of points between +/-m\*sigma.
+ * ```sigma```    Energy spread veriance
+ * ```off_p```    Mean energy offset
+ * ```a_0```      Inital a value
+ * ```z_0```      Inital z value
+ * ```z_f```      Final z value
+ * ```z_num```    Number of points between z_0 and z_f
