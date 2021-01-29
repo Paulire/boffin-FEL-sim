@@ -20,8 +20,7 @@
 #include "error.h"
 #endif
 
-void info_help( void );
-void info_help_advance( void );
+void info_help( bool  );
 
 void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
 {
@@ -44,10 +43,10 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 	{
 
 		if(strcmp("--help", argv[i]) == 0 ) {
-			info_help();
+			info_help( false );
 
 		} else if(strcmp("--HELP", argv[i]) == 0 ) {
-			info_help_advance();
+			info_help( true );
 
 		} else if(strcmp("-v", argv[i]) == 0 ) {
 			BF->should_print = false;
@@ -78,26 +77,40 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 	}
 }
 
-void info_help( void )
+
+void info_help( bool advanced )
 {
-	printf(" Usage: boffin [options] file...\n\n");
-	printf(" Options:\n"); 
-	printf("\t-v\t display infomation while running model\n");
-	printf("\t-i\t input file (csv) - this is assumed if no argument is given\n");
-	printf("\t-o\t data output file (csv)\n");
-	printf("\n For more indepth help try 'a.out --HELP'\n");
-	exit(0);
+	printf(" Usage: Usage: boffin [options] file...\n\n Options:\n \t-i\t input file - this is assumed if no argument is given.\n \t-o\t data output file (csv)\n \t-ap\t plot a(z) values\n \t-pp plot phi(z) values\n \t-pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\n");
+
+	if( advanced == false ) {
+		printf(" Use --HELP for more details\n");
+	}
+	if( advanced == true ) {
+		printf(" Input File Syntax: \n \tN_theta\t The number of theta points between 0 and 2pi.\n \tN_p\t The number of points between +/-m*sigma.\n \tsigma\t Energy spread veriance\n \toff_p\t Mean energy offset\n \ta_0\t  Inital a value\n \tz_0\t Inital z value\n \tz_f\t Final z value\n \tz_num\t  Number of points between z_0 and z_f\n\n");
+		printf(" How to use boffin:\n ");
+		printf(" \tUsers can interact with boffin via an input file and comand line\n");
+		printf(" arguments. The input file's syntax was outlined above. The following is an\n" );
+		printf(" example of how to use boffin. It should be noted that all commands contain\n" );
+		printf(" an '=' and are ended by a ';'\n\n");
+		printf(" ############### input_file.bffn ############### \n");
+		printf("  N_theta=1000;\n");
+		printf("  phi_0=0;\n");
+		printf("  a_0=0.00001;\n");
+		printf("  z_f=20;\n");
+		printf("  z_0=0;\n");
+		printf("  z_num = 1000;\n");
+		printf("  N_p = 1;\n");
+		printf(" ############################################### \n\n");
+		printf(" This is the code for a cold beam. All commands which aren't stated are\n");
+		printf(" assumed (here off_p would be assumed to be 0. The following command will\n");
+		printf(" run the model for the above code and display that a-z plot:\n\n");
+		printf("\t $ boffin -i input_file.bffn -o out_data.csv -ap \n\n");
+		printf(" The output data will be put in the file ./output.csv in the runtime\n");
+		printf(" direcory. The graph will be pushed to the main output display.\n\n");
+		printf(" For licenceing data use --licensing\n");
+		///////////////////////////////////////////////////////////////////////////////////
+	}
+
+ 	exit(0);
 }
 
-
-void info_help_advance( void )
-{
-	printf(" Usage: boffin [options] file...\n\n");
-	printf(" Options:\n"); 
-	printf("\t-v\t display infomation while running model\n");
-	printf("\t-i\t input file (csv) - this is assumed if no argument is given\n");
-	printf("\t-o\t data output file (csv)\n");
-
-	printf("\n\n\t--licence\t for licance infomationi\n");
-	exit(0);
-}
