@@ -13,6 +13,8 @@
 struct input_flags {
 		char in_file[100];
 		char out_file[100];
+		bool plot;
 		bool plot_a;
 		bool plot_phi;
+		bool plot_only_mode;
 };

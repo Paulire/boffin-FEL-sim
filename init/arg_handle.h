@@ -20,9 +20,9 @@
 #include "error.h"
 #endif
 
-void info_help( bool  );
+static inline void info_help( bool  );
 
-void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
+static inline void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
 {
 
 	// If no input then error
@@ -36,8 +36,10 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 	// And input
 	strcpy( IF->in_file , "\0" ) ;
 	strcpy( IF->out_file , "output.csv" );
+	IF->plot = false;
 	IF->plot_a = false;
 	IF->plot_phi = false;
+	IF->plot_only_mode = false;
 
 	for( int i=1; i<argc; i++)
 	{
@@ -62,12 +64,17 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 			i++;
 		
 		} else if(strcmp("-ap", argv[i]) == 0) {
+			IF->plot = true;
 			IF->plot_a = true;
 
 		} else if(strcmp("-pp", argv[i]) == 0) {
+			IF->plot = true;
 			IF->plot_phi = true;
 
-		}else {
+		} else if(strcmp("-plotmode", argv[i]) == 0 ) {
+			IF->plot_only_mode = true;
+
+		} else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
 				printf(" What is '%s'\n", argv[i]);
 				_err_(4);
@@ -75,10 +82,11 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 			strcpy( IF->in_file , argv[i]);
 		}
 	}
+
 }
 
 
-void info_help( bool advanced )
+static inline void info_help( bool advanced )
 {
 	printf(" Usage: Usage: boffin [options] file...\n\n Options:\n \t-i\t input file - this is assumed if no argument is given.\n \t-o\t data output file (csv)\n \t-ap\t plot a(z) values\n \t-pp plot phi(z) values\n \t-pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\n");
 

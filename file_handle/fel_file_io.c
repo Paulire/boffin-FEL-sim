@@ -33,10 +33,13 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 			if( is_arg == 1) {
 				if( ch == '=') {
 					is_arg = 0; i = -1;
+
 				} else if( ch == ';') { 
 					_err_(7);
+
 				} else { 
 					buff_arg[i] = ch;
+
 				}
 
 			} else { // Check argument after
@@ -81,6 +84,7 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 		fputs( ",", fp );
 	}
 
+	// Write all other values
 	for( int i=0; i<2*ELECTRON_NUM+2; i++ ) {
 		fputs( "\n", fp );		
 		
