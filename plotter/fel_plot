@@ -35,15 +35,13 @@ for i in range(2, len(sys.argv)):
 	elif sys.argv[i] == "-pha":
 		ELE_NUM = int(sys.argv[i+2])
 		z_point = int(sys.argv[i+1])
-		theta = np.genfromtxt( sys.argv[1], delimiter=',')[ 2:(ELE_NUM+2), z_point ]
-		p = np.genfromtxt( sys.argv[1], delimiter=',')[ (ELE_NUM+2):, z_point ]
-		print( len(p) )
-		print( len(theta) )
-		exit(0)
+		theta = np.genfromtxt( sys.argv[1], delimiter=',')[ 3:(ELE_NUM+3), z_point ]
+		p = np.genfromtxt( sys.argv[1], delimiter=',')[ (ELE_NUM+3):, z_point ]
 
 
 		plt.plot( theta%(2*np.pi), p, '.b' );
-		if np.abs( plt.axis[3]) <= 0.5 or np.abs( plt.axis[2] <= 0.5 ):
+		if np.abs( float(plt.axis()[3])) < 0.5 or np.abs( float(plt.axis()[2])) < 0.5 :
+			print("hello")
 			plt.ylim( -0.5,0.5)
 		plt.xlim(0, 2*np.pi )
 		plt.xlabel("$\u03B8$", size='x-large')
