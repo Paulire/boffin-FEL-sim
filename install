@@ -1,5 +1,4 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 
 mkdir -p /usr/local/lib/boffin 
 

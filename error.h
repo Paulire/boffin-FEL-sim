@@ -7,7 +7,15 @@
 #include <stdlib.h>
 #endif
 
+void _err_( int );
+void _errtxt_( int, char[] );
+
 void _err_( int index )
+{
+	_errtxt_( index, '\0' );
+}
+
+void _errtxt_( int index, char mess[100] )
 {
 	printf(" E: ");
 	switch (index) {
@@ -25,7 +33,7 @@ void _err_( int index )
 			printf("Unknown argument");
 			break;
 		case 5:
-			printf("Input file not found/forbidden");
+			printf("Can't access file '%s'", mess );
 			break;
 		case 6:
 			printf("Unexpected '=' in input file");

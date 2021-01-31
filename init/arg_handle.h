@@ -22,7 +22,7 @@
 
 static inline void info_help( bool  );
 
-static inline void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
+void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
 {
 
 	// If no input then error
@@ -88,13 +88,27 @@ static inline void arg_handle( int argc, char *argv[], struct boffin_flags *BF, 
 
 static inline void info_help( bool advanced )
 {
-	printf(" Usage: Usage: boffin [options] file...\n\n Options:\n \t-i\t input file - this is assumed if no argument is given.\n \t-o\t data output file (csv)\n \t-ap\t plot a(z) values\n \t-pp plot phi(z) values\n \t-pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\n");
+	printf(" Usage: Usage: boffin [options] file...\n\n");
+	printf(" Options:\n\t");
+	printf(" -i\t input file - this is assumed if no argument is given.\n\t");
+	printf(" -o\t data output file (csv)\n\t");
+	printf(" -ap\t plot a(z) values\n\t");
+	printf(" -pp plot phi(z) values\n\t");
+	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\n");
 
 	if( advanced == false ) {
 		printf(" Use --HELP for more details\n");
 	}
 	if( advanced == true ) {
-		printf(" Input File Syntax: \n \tN_theta\t The number of theta points between 0 and 2pi.\n \tN_p\t The number of points between +/-m*sigma.\n \tsigma\t Energy spread veriance\n \toff_p\t Mean energy offset\n \ta_0\t  Inital a value\n \tz_0\t Inital z value\n \tz_f\t Final z value\n \tz_num\t  Number of points between z_0 and z_f\n\n");
+		printf(" Input File Syntax:\n\t");
+		printf(" N_theta The number of theta points between 0 and 2pi.\n\t");
+		printf(" N_p\t The number of points between +/-m*sigma.\n\t");
+		printf(" sigma\t Energy spread veriance\n\t");
+		printf(" off_p\t Mean energy offset\n\t");
+		printf(" a_0\t Inital a value\n\t");
+		printf(" z_0\t Inital z value\n\t");
+		printf(" z_f\t Final z value\n\t");
+		printf(" z_num\t Number of points between z_0 and z_f\n\n");
 		printf(" How to use boffin:\n ");
 		printf(" \tUsers can interact with boffin via an input file and comand line\n");
 		printf(" arguments. The input file's syntax was outlined above. The following is an\n" );

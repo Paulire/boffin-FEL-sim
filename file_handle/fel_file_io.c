@@ -24,7 +24,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	
 	// Open file then error if NULL file
 	fp = fopen(name, "r");
-	if( fp == NULL) { _err_(5); }
+	if( fp == NULL) { _errtxt_(5, name); }
 	
 	// Read file
 	for( int i=0; (ch=fgetc(fp) ) != EOF; i++ ) {
@@ -56,8 +56,10 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 
 				} else if( ch == '=') {
 					_err_(6);
+
 				} else {
 					buff_num[i] = ch;
+
 				}
 			}
 		// If there is a space \n then don't adnance
