@@ -40,10 +40,10 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 	IF->plot_a = false;
 	IF->plot_phi = false;
 	IF->plot_only_mode = false;
+	IF->cmd_mode = false;
 
 	for( int i=1; i<argc; i++)
 	{
-
 		if(strcmp("--help", argv[i]) == 0 ) {
 			info_help( false );
 
@@ -74,6 +74,13 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 		} else if(strcmp("-plotmode", argv[i]) == 0 ) {
 			IF->plot_only_mode = true;
 
+		} else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
+			if( i == argc)
+				_err_(9);
+			IF->cmd_mode = true;
+			strcpy( IF->cmd_input, argv[i+1] );
+			i++;
+
 		} else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
 				printf(" What is '%s'\n", argv[i]);
@@ -93,11 +100,12 @@ static inline void info_help( bool advanced )
 	printf(" -i\t input file - this is assumed if no argument is given.\n\t");
 	printf(" -o\t data output file (csv)\n\t");
 	printf(" -ap\t plot a(z) values\n\t");
-	printf(" -pp plot phi(z) values\n\t");
-	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\n");
+	printf(" -pp\t plot phi(z) values\n\t");
+	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n");
+	printf(" -CMDMODE\t enerer CMD input mode\n");
 
 	if( advanced == false ) {
-		printf(" Use --HELP for more details\n");
+		printf("\n Use --HELP for more details\n");
 	}
 	if( advanced == true ) {
 		printf(" Input File Syntax:\n\t");
@@ -110,7 +118,7 @@ static inline void info_help( bool advanced )
 		printf(" z_f\t Final z value\n\t");
 		printf(" z_num\t Number of points between z_0 and z_f\n\n");
 		printf(" How to use boffin:\n ");
-		printf(" \tUsers can interact with boffin via an input file and comand line\n");
+		printf("  Users can interact with boffin via an input file and comand line\n");
 		printf(" arguments. The input file's syntax was outlined above. The following is an\n" );
 		printf(" example of how to use boffin. It should be noted that all commands contain\n" );
 		printf(" an '=' and are ended by a ';'\n\n");
@@ -129,6 +137,10 @@ static inline void info_help( bool advanced )
 		printf("\t $ boffin -i input_file.bffn -o out_data.csv -ap \n\n");
 		printf(" The output data will be put in the file ./output.csv in the runtime\n");
 		printf(" direcory. The graph will be pushed to the main output display.\n\n");
+		
+		printf(" CMD Input Mode:\n");
+		printf(" eg\n");
+		printf(" \t $ boffin -CMDMODE \"N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;\" -ap\n\n");
 		printf(" For licenceing data use --licensing\n");
 		///////////////////////////////////////////////////////////////////////////////////
 	}

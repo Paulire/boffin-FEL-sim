@@ -34,6 +34,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 				if( ch == '=') {
 					is_arg = 0; i = -1;
 
+
 				} else if( ch == ';') { 
 					_err_(7);
 
@@ -68,6 +69,51 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	}
 
 	fclose(fp);
+}
+
+// If the comand line contains the input data the this shall be read instead
+void read_from_cmd( char cmd_input[100], struct intergrator_input *fel_val)
+{
+	// File varlibles
+	int is_arg = 1;
+	int count_arg = 0;
+	int count_num = 0;
+	
+	// Read cmd until escape sequnce detected
+	for( int i=0; i<99 ; i++ ) {
+		if( cmd_input[i] == '\0' )  
+			break;
+		if( cmd_input[i] == ' ' ) {
+
+		} else if( is_arg == 1 && cmd_input[i] == '=' ) { 
+			is_arg = 0;
+
+		} else if( is_arg == 1 && cmd_input[i] == ';' ) {
+			_err_(7);
+			
+		} else if( is_arg == 1 ) {
+			buff_arg[ count_arg ] = cmd_input[i];
+			count_arg++;
+
+		} else if( is_arg == 0 && cmd_input[i] == ';' ) {
+			is_arg = 1;
+			count_num = 0;
+			count_arg = 0;
+ 			
+			set_data( fel_val, 1 );
+			
+			memset(&buff_arg[0], '\0', sizeof(buff_arg));
+			memset(&buff_num[0], '\0', sizeof(buff_num));
+
+		} else if( is_arg == 0 && cmd_input[i] == '=' ) {
+			_err_(6);
+
+		} else if( is_arg == 0 ) {
+			buff_num[ count_num ] = cmd_input[i];
+			count_num++;
+		}
+
+	}
 }
 
 void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, int ELECTRON_NUM, int z_point )

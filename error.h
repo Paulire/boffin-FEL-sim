@@ -43,6 +43,10 @@ void _errtxt_( int index, char mess[100] )
 			break;
 		case 8:
 			printf("Output file not found/forbidden");
+			break;
+		case 9:
+			printf("No command line input for -CMD-MODE");
+			break;
 	}
 
 	printf("\n");

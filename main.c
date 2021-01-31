@@ -50,7 +50,10 @@ int main( int argc, char *argv[])
 	if( in_flags.plot_only_mode == false ) {
 		// File Handle
 		struct intergrator_input fel_input_data;	
-		read_from_config( in_flags.in_file, &fel_input_data);
+		if( in_flags.cmd_mode == true )
+			read_from_cmd( in_flags.cmd_input, &fel_input_data );
+		else
+			read_from_config( in_flags.in_file, &fel_input_data);
 
 		// Alocates memeory for integration data
 		int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
