@@ -70,7 +70,6 @@ int main( int argc, char *argv[])
 		// Set z to linspace z_0->z_f in steps of z_sets
 		for( int i=0; i<fel_input_data.z_num; i++) {
 			fel_z_input[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
-			fel_data_matrix[1][i] = 5;
 		}
 
 		// Cold beam settup 
