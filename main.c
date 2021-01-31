@@ -107,9 +107,10 @@ int main( int argc, char *argv[])
 			plot_0 = system( pltcmdbuff );
 		}
 
-		//if( in_flags.plt_pha == true) {
-			// snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha &", in_fla
-		// }
+		if( in_flags.plot_phase == true) {
+			snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha %lf &", in_flags.out_file, in_flags.plot_phase_z );
+			plot_0 = system( pltcmdbuff );
+		}
 
 		plot_0++;
 

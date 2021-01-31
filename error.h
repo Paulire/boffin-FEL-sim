@@ -47,6 +47,9 @@ void _errtxt_( int index, char mess[100] )
 		case 9:
 			printf("No command line input for -CMD-MODE");
 			break;
+		case 10:
+			printf("No z value after -pha");
+			break;
 	}
 
 	printf("\n");

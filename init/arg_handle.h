@@ -40,6 +40,7 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 	IF->plot_a = false;
 	IF->plot_phi = false;
 	IF->plot_only_mode = false;
+	IF->plot_phase = false;
 	IF->cmd_mode = false;
 
 	for( int i=1; i<argc; i++)
@@ -74,6 +75,14 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 		} else if(strcmp("-plotmode", argv[i]) == 0 ) {
 			IF->plot_only_mode = true;
 
+		} else if(strcmp("-pha", argv[i]) == 0 ) {
+			IF->plot = true;
+			IF->plot_phase = true;
+			if( i == argc)
+				_err_(10);
+			IF->plot_phase_z = atof(argv[i+1]);
+			i++;
+
 		} else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
 			if( i == argc)
 				_err_(9);
@@ -90,6 +99,9 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 		}
 	}
 
+	// For plot only mode
+	if( IF->plot_only_mode == true )
+		strcpy( IF->out_file, IF->in_file );
 }
 
 
@@ -102,6 +114,7 @@ static inline void info_help( bool advanced )
 	printf(" -ap\t plot a(z) values\n\t");
 	printf(" -pp\t plot phi(z) values\n\t");
 	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n");
+	printf(" -plotmode\t Will only plot and not run the simulation. Note: the input file is only valed.\n");
 	printf(" -CMDMODE\t enerer CMD input mode\n");
 
 	if( advanced == false ) {

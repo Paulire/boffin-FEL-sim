@@ -19,4 +19,6 @@ struct input_flags {
 		bool plot_a;
 		bool plot_phi;
 		bool plot_only_mode;
+		bool plot_phase;
+		double plot_phase_z;
 };
