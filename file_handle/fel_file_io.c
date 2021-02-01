@@ -28,56 +28,50 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	
 	// Read file
 	for( int i=0; (ch=fgetc(fp) ) != EOF; i++ ) {
-		if( ch != '\n') {if (ch != ' ')  {
-			// Check argument before =
-			if( is_arg == 1) {
-				if( ch == '=') {
-					is_arg = 0; i = -1;
+		if( ch == '\n') {
+			i--;
 
+		} else if (ch == ' ')  {
+			i--;
 
-				} else if( ch == ';') { 
-					_err_(7);
+		// Check argument before =
+		} else if( is_arg == 1 && ch == '=') {
+			is_arg = 0; i = -1;
 
-				} else { 
-					buff_arg[i] = ch;
+		} else if( is_arg == 1 && ch == ';') { 
+			_err_(7);
 
-				}
+		} else if( is_arg == 1 ) { 
+			buff_arg[i] = ch;
 
-			} else { // Check argument after
-				if( ch == ';') {
-					is_arg = 1;
-					i = -1;
+		} else if( is_arg == 0 && ch == ';') {
+			is_arg = 1;
+			i = -1;
 
- 					set_data( fel_val, line_no );
+			set_data( fel_val, line_no );
 
-					memset(&buff_arg[0], '\0', sizeof(buff_arg));
-					memset(&buff_num[0], '\0', sizeof(buff_num));
+			memset(&buff_arg[0], '\0', sizeof(buff_arg));
+			memset(&buff_num[0], '\0', sizeof(buff_num));
 
-					line_no++;
+			line_no++;
 
-				} else if( ch == '=') {
-					_err_(6);
+		} else if( is_arg == 0 && ch == '=') {
+			_err_(6);
 
-				} else {
-					buff_num[i] = ch;
+		} else if( is_arg == 0 ) {
+			buff_num[i] = ch;
 
-				}
-			}
-		// If there is a space \n then don't adnance
-		} else { i--; }
-		} else { i--; }
+		}
 	}
 
 	fclose(fp);
 }
 
 // If the comand line contains the input data the this shall be read instead
-void read_from_cmd( char cmd_input[100], struct intergrator_input *fel_val)
+void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 {
 	// File varlibles
-	int is_arg = 1;
-	int count_arg = 0;
-	int count_num = 0;
+	int is_arg = 1, count_char = 0;
 	
 	// Read cmd until escape sequnce detected
 	for( int i=0; i<99 ; i++ ) {
@@ -92,13 +86,14 @@ void read_from_cmd( char cmd_input[100], struct intergrator_input *fel_val)
 			_err_(7);
 			
 		} else if( is_arg == 1 ) {
-			buff_arg[ count_arg ] = cmd_input[i];
-			count_arg++;
+			buff_arg[ count_char ] = cmd_input[i];
+			count_char++;
 
+		// Sets data and sets buffers to NULL
 		} else if( is_arg == 0 && cmd_input[i] == ';' ) {
 			is_arg = 1;
-			count_num = 0;
-			count_arg = 0;
+			count_char = 0;
+			count_char = 0;
  			
 			set_data( fel_val, 1 );
 			
@@ -109,8 +104,8 @@ void read_from_cmd( char cmd_input[100], struct intergrator_input *fel_val)
 			_err_(6);
 
 		} else if( is_arg == 0 ) {
-			buff_num[ count_num ] = cmd_input[i];
-			count_num++;
+			buff_num[ count_char ] = cmd_input[i];
+			count_char++;
 		}
 
 	}
