@@ -30,7 +30,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	for( int i=0; (ch=fgetc(fp) ) != EOF; i++ ) {
 		// Comments are ignored
 		if( ch == '#' ) {
-			i = -1; line_no++;
+			i = 0; line_no++;
 
 			// Exit at new line
 			for( int e=0; (ch=fgetc(fp)) != EOF; e++ ) {
