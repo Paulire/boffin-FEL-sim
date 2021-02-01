@@ -63,21 +63,7 @@ int main( int argc, char *argv[])
 			fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
 		}
 
-		/*// Sets values for integration data
-		fel_data_matrix[0][0] = fel_input_data.a_0;
-		fel_data_matrix[1][0] = fel_input_data.phi_0;
-
-		// Set z to linspace z_0->z_f in steps of z_sets
-		for( int i=0; i<fel_input_data.z_num; i++) {
-			fel_z_input[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
-		}
-
-		// Cold beam settup 
-		for( int i=0; i<ELECTRON_NUM; i++) {
-			fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
-			fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
-		}*/
-
+		// Sets FEL input data
 		set_fel_input_data( fel_input_data, fel_z_input, fel_data_matrix, ELECTRON_NUM);
 
 		// Integrator
