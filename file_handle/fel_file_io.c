@@ -104,6 +104,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 
 		} else if( is_arg == 1 && cmd_input[i] == '=' ) { 
 			is_arg = 0;
+			count_char = 0;
 
 		} else if( is_arg == 1 && cmd_input[i] == ';' ) {
 			_err_(7);
@@ -115,7 +116,6 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 		// Sets data and sets buffers to NULL
 		} else if( is_arg == 0 && cmd_input[i] == ';' ) {
 			is_arg = 1;
-			count_char = 0;
 			count_char = 0;
  			
 			set_data( fel_val, 1 );
@@ -144,7 +144,6 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	// Write each z value to line 1
 	for( int i=0; i<z_point; i++) {
-		//snprintf(buff_arg, sizeof(buff_arg), "%lf", z_val[i]);
 		snprintf(buff_arg, sizeof(buff_arg), "%15.10e", z_val[i]);
 		fputs( buff_arg, fp );
 		fputs( ",", fp );
@@ -185,6 +184,8 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->phi_0 = atof(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "z_num") == 0 ) {
 		fel_val->z_num = atoi(buff_num); 
+	} else if( strcmp( (char*)buff_arg, "m") == 0 ) {
+		fel_val->m = atoi(buff_num);
 	} else {
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}

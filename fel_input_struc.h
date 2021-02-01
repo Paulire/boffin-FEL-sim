@@ -3,6 +3,7 @@ struct intergrator_input {
 	int N_p;	// Electron per theta soace	
 	double off_p;	// P offset
 	double sigma;	// Energy spread
+	int m;		// Spread can be upto sigma*m
 	double z_0;	// z start
 	double z_f;	// z end
 	int z_num;
