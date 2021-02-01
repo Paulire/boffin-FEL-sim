@@ -28,39 +28,62 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	
 	// Read file
 	for( int i=0; (ch=fgetc(fp) ) != EOF; i++ ) {
+		// Comments are ignored
+		if( ch == '#' ) {
+			i = -1; line_no++;
+
+			// Exit at new line
+			for( int e=0; (ch=fgetc(fp)) != EOF; e++ ) {
+				if( ch == '\n' ) 
+					break;
+
+			}
+		}
+
+		// Skip spaces and newlines
 		if( ch == '\n') {
-			i--;
+			i--; line_no++;
 
 		} else if (ch == ' ')  {
 			i--;
 
+		} else {
 		// Check argument before =
-		} else if( is_arg == 1 && ch == '=') {
-			is_arg = 0; i = -1;
+		switch( is_arg ) {
+			case 1:
+				if( ch == '=' ) {
+					is_arg = 0; i = -1;
 
-		} else if( is_arg == 1 && ch == ';') { 
-			_err_(7);
+				} else if( ch == ';' ) {
+					_err_(7);
 
-		} else if( is_arg == 1 ) { 
-			buff_arg[i] = ch;
+				} else {
+					buff_arg[i] = ch;
+				}
 
-		} else if( is_arg == 0 && ch == ';') {
-			is_arg = 1;
-			i = -1;
+				break;
 
-			set_data( fel_val, line_no );
+			case 0:
+				if( ch == ';' ) {
 
-			memset(&buff_arg[0], '\0', sizeof(buff_arg));
-			memset(&buff_num[0], '\0', sizeof(buff_num));
+					is_arg = 1;
+					i = -1;
 
-			line_no++;
+					set_data( fel_val, line_no );
 
-		} else if( is_arg == 0 && ch == '=') {
-			_err_(6);
+					memset(&buff_arg[0], '\0', sizeof(buff_arg));
+					memset(&buff_num[0], '\0', sizeof(buff_num));
 
-		} else if( is_arg == 0 ) {
-			buff_num[i] = ch;
+				} else if( ch == '=' )
+					_err_(6);
 
+				else 
+					buff_num[i] = ch;
+
+				break;
+					
+
+		}
 		}
 	}
 
