@@ -153,7 +153,7 @@ static inline void info_help( bool advanced )
 		
 		printf(" CMD Input Mode:\n");
 		printf(" eg\n");
-		printf(" \t $ boffin -CMDMODE \"N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;\" -ap\n\n");
+		printf(" \t $ boffin -o output.csv -CMDMODE \"N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;\" -ap\n\n");
 		printf(" For licenceing data use --licensing\n");
 		///////////////////////////////////////////////////////////////////////////////////
 	}

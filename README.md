@@ -19,6 +19,8 @@ Requires ''gcc'' and ''gsl'' to be installed for integration. For plotting ''Pyt
 sudo apt-get install gcc gsl-bin python3 python3-devs python3-matplotlib python3-numpy
 ```
 
+## Everything under here is not upto date, for the upto date manual install BoFfIn and run boffin --HELP
+
 ## Manual
  Usage: boffin [options] file...
 
