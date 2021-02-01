@@ -13,6 +13,7 @@
 
 // Loading shared libries 
 #include "file_handle/file_handle.h"
+
 #ifndef FEL_INTERGRATOR_H
 #define FEL_INTERGRATOR_H
 #include "boffin/fel_intergrator.h"
@@ -26,6 +27,11 @@
 #ifndef BEAM_SETUP_H
 #define BEAM_SETUP_H
 #include "init/beam_setup.h"
+#endif
+
+#ifndef RUN_PLOT_H
+#define RUN_PLOT_H
+#include "plotter/run_plot.h"
 #endif
 
 // Other headers
@@ -84,28 +90,9 @@ int main( int argc, char *argv[])
 	}
 	
 	// Plot if needed. 
-	if( in_flags.plot == true ) {
-		char pltcmdbuff[200];
-		int plot_0 = 1;
-
-		if( in_flags.plot_a == true) {
-			snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -a &", in_flags.out_file );
-			plot_0 = system( pltcmdbuff );
-		}
-
-		if( in_flags.plot_phi == true) {
-			snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -phi &", in_flags.out_file );
-			plot_0 = system( pltcmdbuff );
-		}
-
-		if( in_flags.plot_phase == true) {
-			snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha %lf &", in_flags.out_file, in_flags.plot_phase_z );
-			plot_0 = system( pltcmdbuff );
-		}
-
-		plot_0++;
-
-	}
+	if( in_flags.plot == true )
+		fel_plot( in_flags );
+	
 
 	return 0;
 }
