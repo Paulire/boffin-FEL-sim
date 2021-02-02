@@ -19,6 +19,7 @@
 #define ERROR_H
 #include "error.h"
 #endif
+#include "../error/error.h"
 
 static inline void info_help( bool  );
 
@@ -27,7 +28,7 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 
 	// If no input then error
 	if( argc == 1) {
-		_err_(1);
+		__error__( "No input arguments\n Try boffin --help" );
 	}
 
 	// Set default flags BOFfIn
@@ -55,12 +56,12 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 			BF->should_print = false;
 
 		} else if(strcmp("-i", argv[i]) == 0 ) {
-			if( argc == i+1 ) { _err_(2); }
+			if( argc == i+1 ) { __error__( "No input file after -i"  ); }
 			strcpy( IF->in_file , argv[i+1] );
 			i++;
 
 		} else if(strcmp("-o", argv[i]) == 0 ) {
-			if( argc == i+1 ) { _err_(3); }
+			if( argc == i+1 ) { __error__( "No output file after -o" ); }
 			strcpy( IF->out_file , argv[i+1]);
 			i++;
 		
@@ -78,22 +79,23 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_f
 		} else if(strcmp("-pha", argv[i]) == 0 ) {
 			IF->plot = true;
 			IF->plot_phase = true;
-			if( i == argc)
-				_err_(10);
+			if( i == argc-1)
+				__error__( "No z value after -pha" );
 			IF->plot_phase_z = atof(argv[i+1]);
 			i++;
 
 		} else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
-			if( i == argc)
-				_err_(9);
+			if( i == argc-1)
+				__error__( "No command line input for -CMDMODE" );
 			IF->cmd_mode = true;
 			strcpy( IF->cmd_input, argv[i+1] );
 			i++;
 
 		} else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
-				printf(" What is '%s'\n", argv[i]);
-				_err_(4);
+				char buff[30] = "Unknown argument: ";
+				strcat( buff, argv[i] );
+				__error__( buff );
 			}
 			strcpy( IF->in_file , argv[i]);
 		}

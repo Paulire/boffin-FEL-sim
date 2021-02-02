@@ -2,12 +2,11 @@
 
 #include "file_handle.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-#ifndef ERROR_H
-#define ERROR_H
-#include "../error.h"
-#endif
+#include "../error/error.h"
 
 // Data verlibles
 char buff_arg[100] = { '\0' };	// buffers for the command and the name
@@ -24,7 +23,11 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	
 	// Open file then error if NULL file
 	fp = fopen(name, "r");
-	if( fp == NULL) { _errtxt_(5, name); }
+	if( fp == NULL) { 
+		char errbuff[20] = "Can't access file: ";
+		strcat(errbuff, name);
+		__error__( errbuff );
+	}
 	
 	// Read file
 	for( int i=0; (ch=fgetc(fp) ) != EOF; i++ ) {
@@ -55,7 +58,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 					is_arg = 0; i = -1;
 
 				} else if( ch == ';' ) {
-					_err_(7);
+					__error__( "Unexpected ';' in input file" );
 
 				} else {
 					buff_arg[i] = ch;
@@ -75,7 +78,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 					memset(&buff_num[0], '\0', sizeof(buff_num));
 
 				} else if( ch == '=' )
-					_err_(6);
+					__error__( "Unexpected '=' in input file" );
 
 				else 
 					buff_num[i] = ch;
@@ -107,7 +110,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 			count_char = 0;
 
 		} else if( is_arg == 1 && cmd_input[i] == ';' ) {
-			_err_(7);
+			__error__( "Unexpected ';' in input file" );
 			
 		} else if( is_arg == 1 ) {
 			buff_arg[ count_char ] = cmd_input[i];
@@ -124,7 +127,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 			memset(&buff_num[0], '\0', sizeof(buff_num));
 
 		} else if( is_arg == 0 && cmd_input[i] == '=' ) {
-			_err_(6);
+			__error__( "Unexpected '=' in input file" );
 
 		} else if( is_arg == 0 ) {
 			buff_num[ count_char ] = cmd_input[i];
@@ -140,7 +143,7 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	// Open file then error if NULL file
 	fp = fopen(name, "w");
-	if( fp == NULL) { _err_(8); }
+	if( fp == NULL) { __error__( "Output file forbidden" ); }
 
 	// Write each z value to line 1
 	for( int i=0; i<z_point; i++) {
@@ -162,6 +165,7 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	fclose( fp );
 }
+
 
 // Checks looks up command then applies value to relevent var
 void set_data( struct intergrator_input *fel_val, int line) 
