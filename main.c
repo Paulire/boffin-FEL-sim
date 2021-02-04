@@ -1,50 +1,14 @@
-// Loads flags first
-#ifndef BOFFIN_FLAGS_H
-#define BOFFIN_FLAGS_H
-#include "boffin/boffin_flags.h"
-#endif
-
-#ifndef FLAGS_H
-#define FLAGS_H
-#include "init/flags.h"
-#endif
-
-#define PI 3.14159265358979
-
-// Loading shared libries 
-#include "file_handle/file_handle.h"
-
-#ifndef FEL_INTERGRATOR_H
-#define FEL_INTERGRATOR_H
-#include "boffin/fel_intergrator.h"
-#endif
-
-#ifndef FEL_INPUT_STRUC_H
-#define FEL_INPUT_STRUC_H
-#include "fel_input_struc.h"
-#endif
-
-#ifndef BEAM_SETUP_H
-#define BEAM_SETUP_H
-#include "init/beam_setup.h"
-#endif
-
-#ifndef RUN_PLOT_H
-#define RUN_PLOT_H
-#include "plotter/run_plot.h"
-#endif
-
-// Other headers
-#ifndef ERROR_H
-#define ERROR_H
-#include "error.h"
-#endif
-#ifndef STRING_H
-#define STRING_H
+#include <stdlib.h>
 #include <string.h>
-#endif
 
-#include "init/arg_handle.h"
+#include "init/init.h"
+#include "file_handle/file_handle.h"
+#include "boffin/fel_intergrator.h"
+#include "fel_input_struc.h"
+#include "boffin/boffin_flags.h"
+#include "plotter/run_plot.h"
+#include "error.h"
+
 
 int main( int argc, char *argv[])
 {
@@ -59,6 +23,7 @@ int main( int argc, char *argv[])
 	if( in_flags.plot_only_mode == false ) {
 		// File Handle
 		struct intergrator_input fel_input_data;	
+
 		if( in_flags.cmd_mode == true )
 			read_from_cmd( in_flags.cmd_input, &fel_input_data );
 		else
@@ -73,7 +38,7 @@ int main( int argc, char *argv[])
 		}
 
 		// Sets FEL input data
-		set_fel_input_data( fel_input_data, fel_z_input, fel_data_matrix, ELECTRON_NUM);
+            set_fel_input_data( fel_input_data, fel_z_input, fel_data_matrix, ELECTRON_NUM );
 
 		// Integrator
 		boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);

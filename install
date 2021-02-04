@@ -4,11 +4,13 @@ mkdir -p /usr/local/lib/boffin
 
 gcc -O3 -shared error/*.c -o /usr/local/lib/boffin/err.so
 
+gcc -O3 -ffast-math -shared -DUSE_RESTRICT init/*.c -o /usr/local/lib/boffin/init.so /usr/local/lib/boffin/err.so
+
 gcc -O3 -ffast-math -funsafe-math-optimizations -m64 -march=native -DUSE_RESTRICT -g -fPIC -Wall -Wextra ./file_handle/*.c -shared -o /usr/local/lib/boffin/file_handle.so /usr/local/lib/boffin/err.so
 
 gcc -O3 -ffast-math -funsafe-math-optimizations -m64 -march=native -DUSE_RESTRICT -g -fPIC -Wall -Wextra ./boffin/*.c -shared -o /usr/local/lib/boffin/fel_inter.so $(gsl-config --cflags)  $(gsl-config --libs) -mmmx -msse -msse2 -msse3 -mssse3 -msse4 -msse4.1 -msse4.2 -mavx -mavx2 -msse4a -m3dnow
 
-gcc -O3 -ffast-math -funsafe-math-optimizations -m64 -march=native -DUSE_RESTRICT -g -Wall -Wextra -o /usr/local/bin/boffin main.c /usr/local/lib/boffin/fel_inter.so /usr/local/lib/boffin/file_handle.so /usr/local/lib/boffin/err.so
+gcc -O3 -ffast-math -funsafe-math-optimizations -m64 -march=native -DUSE_RESTRICT -g -Wall -Wextra -o /usr/local/bin/boffin main.c /usr/local/lib/boffin/fel_inter.so /usr/local/lib/boffin/file_handle.so /usr/local/lib/boffin/err.so /usr/local/lib/boffin/init.so
 
 cp -fr plotter/fel_plot /usr/local/bin
 

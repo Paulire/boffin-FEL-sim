@@ -1,12 +1,12 @@
 /* For reaiding and interpriting files */
 
-#include "file_handle.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 #include "../error/error.h"
+#include "file_handle.h"
 
 // Data verlibles
 char buff_arg[100] = { '\0' };	// buffers for the command and the name

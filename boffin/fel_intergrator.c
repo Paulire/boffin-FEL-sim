@@ -1,25 +1,11 @@
-#include "fel_intergrator.h"
 #include <stdio.h>
-
-#ifndef MATH_H
-#define MATH_H
 #include <math.h>
-#endif
 
-#ifndef GSL_GSL_odeiv_H
-#define GSL_GSL_odeiv_H
 #include <gsl/gsl_odeiv.h>
-#endif
-
-#ifndef GSL_GSL_MATH_H
-#define GSL_GSL_MATH_H
 #include <gsl/gsl_math.h>
-#endif
-
-#ifndef GSL_GSL_MATRIX_H
-#define GSL_GSL_MATRIX_H
 #include <gsl/gsl_matrix.h>
-#endif
+
+#include "fel_intergrator.h"
 
 /////////////////////////////////////////////
 // For arrays corisponding to input data:  //

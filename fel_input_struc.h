@@ -1,3 +1,6 @@
+#ifndef _FEL_INIPUT_STRUC_H
+#define _FEL_INIPUT_STRUC_H
+
 struct intergrator_input {
 	int N_theta;	// Points in theta
 	int N_p;	// Electron per theta soace	
@@ -10,3 +13,5 @@ struct intergrator_input {
 	double a_0;
 	double phi_0;
 };
+
+#endif
