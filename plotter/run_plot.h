@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../fel_input_struc.h"
+#include "../init/init.h"
 
 static inline void fel_plot( struct input_flags in_flags )
 {

@@ -11,47 +11,49 @@ z = np.genfromtxt( sys.argv[1], delimiter=',')[0,:]
 
 
 for i in range(2, len(sys.argv)):
-	# Plot a
-	if sys.argv[i] == "-a":
-		a = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
-		plt.plot(z,a,'-b')
-		plt.yscale('log')
-		plt.xlabel("$z\u0305$", size='x-large')
-		plt.ylabel("$\u0251$", size='x-large')
-		plt.grid(which='both')
-		plt.show()
+    # Plot a
+    if sys.argv[i] == "-a":
+        a = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
+        plt.plot(z,a,'-b')
+        plt.yscale('log')
+        plt.xlabel("$z\u0305$", size='x-large')
+        plt.ylabel("$\u0251$", size='x-large')
+        plt.grid(which='both')
+        plt.show()
 
-	# Plot phi
-	elif sys.argv[i] == "-phi":
-		phi = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
-		phi = np.genfromtxt( sys.argv[1], delimiter=',')[2,:]
-		plt.plot(z,phi,'-b')
-		plt.xlabel("$z\u0305$", size='x-large')
-		plt.ylabel("$\u03C6$", size='x-large')
-		plt.grid(which='both')
-		plt.show()
-	
-	# Phot phase space
-	elif sys.argv[i] == "-pha":
-		ELE_NUM = int( (len( np.genfromtxt( sys.argv[1], delimiter=',')[ : , 0 ] ) -3)/2 )
-		position = float(sys.argv[i+1])
-		point = int( position*(len(z)-1)/z[-2])
-		theta = np.genfromtxt( sys.argv[1], delimiter=',')[ 3:(ELE_NUM+3), point ]
-		p = np.genfromtxt( sys.argv[1], delimiter=',')[ (ELE_NUM+3):, point ]
-		a = np.genfromtxt( sys.argv[1], delimiter=',')[ 1, point ]
-		phi = np.genfromtxt( sys.argv[1], delimiter=',')[ 2, point ]
-		
-		# Seperatrix
-		data_r = np.linspace(0, 2*np.pi, 1000)
-		plt.plot( data_r, np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
-		plt.plot( data_r, -np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
+    # Plot phi
+    elif sys.argv[i] == "-phi":
+        phi = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
+        phi = np.genfromtxt( sys.argv[1], delimiter=',')[2,:]
+        plt.plot(z,phi,'-b')
+        plt.xlabel("$z\u0305$", size='x-large')
+        plt.ylabel("$\u03C6$", size='x-large')
+        plt.grid(which='both')
+        plt.show()
 
-		# Main plot
-		plt.plot( theta%(2*np.pi), p, '.r' );
-		if np.abs( float(plt.axis()[3])) < 0.5 or np.abs( float(plt.axis()[2])) < 0.5 :
-			plt.ylim( -0.5,0.5)
-		plt.xlim(0, 2*np.pi )
-		plt.xlabel("$\u03B8$", size='x-large')
-		plt.ylabel("$p$", size='x-large')
-		plt.grid(which='both')
-		plt.show()
+    # Phot phase space
+    elif sys.argv[i] == "-pha":
+        ELE_NUM = int( (len( np.genfromtxt( sys.argv[1], delimiter=',')[ : , 0 ] ) -3)/2 )
+        position = float(sys.argv[i+1])
+        point = int( position*(len(z)-1)/z[-2])
+        if( point > len(z)-1 ):
+            point = len(z)-1
+        theta = np.genfromtxt( sys.argv[1], delimiter=',')[ 3:(ELE_NUM+3), point ]
+        p = np.genfromtxt( sys.argv[1], delimiter=',')[ (ELE_NUM+3):, point ]
+        a = np.genfromtxt( sys.argv[1], delimiter=',')[ 1, point ]
+        phi = np.genfromtxt( sys.argv[1], delimiter=',')[ 2, point ]
+
+        # Seperatrix
+        data_r = np.linspace(0, 2*np.pi, 1000)
+        plt.plot( data_r, np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
+        plt.plot( data_r, -np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
+
+        # Main plot
+        plt.plot( theta%(2*np.pi), p, '.r' );
+        if np.abs( float(plt.axis()[3])) < 0.5 or np.abs( float(plt.axis()[2])) < 0.5 :
+            plt.ylim( -0.5,0.5)
+        plt.xlim(0, 2*np.pi )
+        plt.xlabel("$\u03B8$", size='x-large')
+        plt.ylabel("$p$", size='x-large')
+        plt.grid(which='both')
+        plt.show()
