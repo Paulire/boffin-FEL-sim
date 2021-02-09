@@ -1,14 +1,9 @@
 /* Handels plotting */
+#ifndf _RUN_PLOT_H_
+#define _RUN_PLOT_H_
 
-#ifndef _STDIO_H_
-#define _STDIO_H_
 #include <stdio.h>
-#endif
-
-#ifndef _STDLIB_H_
-#define _STDLIB_H_
 #include <stdlib.h>
-#endif
 
 #include "../fel_input_struc.h"
 
@@ -35,3 +30,5 @@ static inline void fel_plot( struct input_flags in_flags )
 
 	plot_0++;
 }
+
+#endif
