@@ -1,5 +1,5 @@
 /* Handels plotting */
-#ifndf _RUN_PLOT_H_
+#ifndef _RUN_PLOT_H_
 #define _RUN_PLOT_H_
 
 #include <stdio.h>
