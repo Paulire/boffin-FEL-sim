@@ -53,39 +53,34 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 		} else {
 		// Check argument before =
 		switch( is_arg ) {
-			case 1:
-				if( ch == '=' ) {
-					is_arg = 0; i = -1;
+                case 1:
+                        if( ch == '=' ) {
+                                is_arg = 0; i = -1;
 
-				} else if( ch == ';' ) {
-					__error__( "Unexpected ';' in input file" );
+                        } else if( ch == ';' )
+                                __error__( "Unexpected ';' in input file" );
+                        else 
+                                buff_arg[i] = ch;
 
-				} else {
-					buff_arg[i] = ch;
-				}
+                        break;
 
-				break;
+                case 0:
+                        if( ch == ';' ) {
 
-			case 0:
-				if( ch == ';' ) {
+                                is_arg = 1;
+                                i = -1;
 
-					is_arg = 1;
-					i = -1;
+                                set_data( fel_val, line_no );
 
-					set_data( fel_val, line_no );
+                                memset(&buff_arg[0], '\0', sizeof(buff_arg));
+                                memset(&buff_num[0], '\0', sizeof(buff_num));
 
-					memset(&buff_arg[0], '\0', sizeof(buff_arg));
-					memset(&buff_num[0], '\0', sizeof(buff_num));
+                        } else if( ch == '=' )
+                                __error__( "Unexpected '=' in input file" );
+                        else 
+                                buff_num[i] = ch;
 
-				} else if( ch == '=' )
-					__error__( "Unexpected '=' in input file" );
-
-				else 
-					buff_num[i] = ch;
-
-				break;
-					
-
+                        break;
 		}
 		}
 	}
