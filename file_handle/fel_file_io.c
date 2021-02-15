@@ -142,7 +142,7 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	// Write each z value to line 1
 	for( int i=0; i<z_point; i++) {
-		snprintf(buff_arg, sizeof(buff_arg), "%15.10e", z_val[i]);
+		snprintf(buff_arg, sizeof(buff_arg), "%.58f", z_val[i]);
 		fputs( buff_arg, fp );
 		fputs( ",", fp );
 	}
@@ -152,7 +152,7 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 		fputs( "\n", fp );		
 		
 		for( int e=0; e<z_point; e++ ) {
-			snprintf( buff_arg, sizeof( buff_arg ), "%15.10e", out_data_val[i][e] );
+			snprintf( buff_arg, sizeof( buff_arg ), "%.58f", out_data_val[i][e] );
 			fputs( buff_arg, fp );
 			fputs( ",", fp );
 		}
