@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <gsl/gsl_randist.h>
 
 #include "init.h"
 
@@ -24,14 +25,12 @@ void set_fel_input_data( struct intergrator_input fel_input_data, double *restri
 	}
 
 	switch( fel_input_data.N_p ) {
-		case 1:
-                        cold_beam_setup( fel_data_matrix, ELECTRON_NUM );
-			break;
-
-		default:
-                        hot_beam_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM );
-
-                  break;
+        case 1:
+                cold_beam_setup( fel_data_matrix, ELECTRON_NUM );
+                break;
+        default:
+                hot_beam_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM );
+                break;
 	}
 }
 
@@ -58,8 +57,8 @@ static inline void hot_beam_setup( struct intergrator_input *restrict fel_input_
                         fel_data_matrix[t_indx][0] = (double) i*2*PI/fel_input_data->N_theta;
                         fel_data_matrix[p_indx][0] = (double) e*2*fel_input_data->sigma*fel_input_data->m/(fel_input_data->N_p-1) - fel_input_data->sigma*fel_input_data->m;
 
-				}
-			}
+		}
+	}
 }
 
 // Random Float Generation
