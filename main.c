@@ -9,12 +9,12 @@
 #include "plotter/run_plot.h"
 #include "error.h"
 
-static inline void build_and_run_boffin( struct input_flags *, struct boffin_flags *  );
+static inline void build_and_run_boffin( input_flags *, struct boffin_flags *  );
 
 int main( int argc, char *argv[])
 {
 	// Flag sets
-	struct input_flags fel_input_flags;
+	input_flags fel_input_flags;
 	struct boffin_flags bffn_flags;
 	
 	// Handles input
@@ -33,7 +33,7 @@ int main( int argc, char *argv[])
 	return 0;
 }
 
-static inline void build_and_run_boffin( struct input_flags *restrict fel_input_flags, struct boffin_flags *restrict bffn_flags  ){
+static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, struct boffin_flags *restrict bffn_flags  ){
 
         // File Handle
         struct intergrator_input fel_input_data;	
@@ -51,7 +51,7 @@ static inline void build_and_run_boffin( struct input_flags *restrict fel_input_
                 fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
 
         // Sets FEL input data
-        set_fel_input_data( fel_input_data, fel_z_input, fel_data_matrix, ELECTRON_NUM );
+        set_fel_input_data( fel_input_data, *fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
 
         // Integrator
         boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);

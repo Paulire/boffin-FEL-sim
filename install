@@ -4,7 +4,7 @@ mkdir -p /usr/local/lib/boffin
 
 gcc -O3 -shared -m64 error/*.c -o /usr/local/lib/boffin/err.so
 
-gcc -O3 -ffast-math -shared -DUSE_RESTRICT -m64 init/*.c -o /usr/local/lib/boffin/init.so /usr/local/lib/boffin/err.so
+gcc -O3 -ffast-math -shared -DUSE_RESTRICT -m64 -fPIC init/*.c -o /usr/local/lib/boffin/init.so /usr/local/lib/boffin/err.so
 
 gcc -O3 -ffast-math -funsafe-math-optimizations -m64 -march=native -DUSE_RESTRICT -g -fPIC -Wall -Wextra ./file_handle/*.c -shared -o /usr/local/lib/boffin/file_handle.so /usr/local/lib/boffin/err.so
 

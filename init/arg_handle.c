@@ -11,7 +11,7 @@
 
 static inline void info_help( bool  );
 
-void arg_handle( int argc, char *argv[], struct boffin_flags *BF, struct input_flags *IF )
+void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *IF )
 {
 
 	// If no input then error
