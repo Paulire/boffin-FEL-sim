@@ -31,6 +31,7 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 	IF->plot_only_mode = false;
 	IF->plot_phase = false;
 	IF->cmd_mode = false;
+        IF->shot_noise = false;
 
 	for( int i=1; i<argc; i++)
 	{
@@ -79,7 +80,19 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 			strcpy( IF->cmd_input, argv[i+1] );
 			i++;
 
-		} else {
+                } else if( strcmp("-s", argv[i]) == 0 ) {
+                        IF->shot_noise = true;
+
+                } else if( strcmp("--seed", argv[i]) == 0 ){
+			if( i == argc-1)
+				__error__( "No command line input for --seed" );
+                        IF->shot_noise = true;
+                        IF->shot_noise_seed_set = true;
+                        IF->shot_noise_seed = strtoul( argv[i+1], (char **)'\0', 10 );
+
+                        printf("%ld", IF->shot_noise_seed);
+                        exit(0);
+                }else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
 				char buff[30] = "Unknown argument: ";
 				strcat( buff, argv[i] );
@@ -120,6 +133,8 @@ static inline void info_help( bool advanced )
 		printf(" z_0\t Inital z value\n\t");
 		printf(" z_f\t Final z value\n\t");
 		printf(" z_num\t Number of points between z_0 and z_f\n\n");
+                printf(" shot_noise\t 1 or zero");
+                printf(" seed\t if a seed is not set then one will be created");
 		printf(" How to use boffin:\n ");
 		printf("  Users can interact with boffin via an input file and comand line\n");
 		printf(" arguments. The input file's syntax was outlined above. The following is an\n" );
@@ -133,6 +148,7 @@ static inline void info_help( bool advanced )
 		printf("  z_0=0;\n");
 		printf("  z_num = 1000;\n");
 		printf("  N_p = 1;\n");
+                printf("  shot_noise = 0 ");
 		printf(" ############################################### \n\n");
 		printf(" This is the code for a cold beam. All commands which aren't stated are\n");
 		printf(" assumed (here off_p would be assumed to be 0. The following command will\n");

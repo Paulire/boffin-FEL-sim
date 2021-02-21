@@ -21,7 +21,8 @@ typedef struct input_flag {
 		bool plot_phase;
 		double plot_phase_z;
                 bool shot_noise;
-                bool shot_seed_set;
+                unsigned long int shot_noise_seed;
+                bool shot_noise_seed_set;
 } input_flags;
 
 // Controls input arguments and adjusts relevent input flags

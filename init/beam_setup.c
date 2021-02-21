@@ -33,7 +33,7 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags us
          * for *NIX systems. For windwows a new
          * seeder will need to be created.
          */
-        if( user_in.shot_noise == true && user_in.shot_seed_set == false  ) {
+        if( user_in.shot_noise == true && user_in.shot_noise_seed_set == false  ) {
                 char ch[9];
 
                 FILE *fp = fopen("/dev/urandom", "r");
@@ -42,19 +42,19 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags us
 
                 // Seed bits corispond to CPU architecture
                 for( int i=0; i<(int)sizeof( unsigned long int ); i++ ) {
-                        fel_input_data.shot_noise_seed *= 256;
-                        fel_input_data.shot_noise_seed += ( unsigned long int ) ch[i];
+                        user_in.shot_noise_seed *= 256;
+                        user_in.shot_noise_seed += ( unsigned long int ) ch[i];
                 }
                 
-                user_in.shot_seed_set = true;
+                user_in.shot_noise_seed_set = true;
 
         }
 
-        if( user_in.shot_seed_set == true ) {
+        if( user_in.shot_noise_seed_set == true ) {
                 gsl_rng_env_setup();
                 T = gsl_rng_ranlxd2;
                 r = gsl_rng_alloc (T);
-                gsl_rng_set(r, fel_input_data.shot_noise_seed);
+                gsl_rng_set(r, user_in.shot_noise_seed);
         }
 
         for( int i=0; i<fel_input_data.N_theta; i++ ) {
@@ -80,7 +80,6 @@ static inline void beam_energy_setup( struct intergrator_input *restrict fel_inp
                 fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
                 break;
         default:
-                
                 // Hot beam
                 for( int e=0; e<fel_input_data->N_p; e++ ) {
                         // Determine current index

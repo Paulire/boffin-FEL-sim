@@ -12,7 +12,6 @@ struct intergrator_input {
 	int z_num;
 	double a_0;
 	double phi_0;
-        unsigned long int shot_noise_seed;
 };
 
 #endif
