@@ -105,6 +105,8 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 	// For plot only mode
 	if( IF->plot_only_mode == true )
 		strcpy( IF->out_file, IF->in_file );
+        if( IF->plot_only_mode == true && IF->plot == false )
+                __error__( "BOFfIn Requires plot type in Plot Mode" );
 }
 
 
