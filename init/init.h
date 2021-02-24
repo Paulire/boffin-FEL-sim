@@ -29,6 +29,6 @@ typedef struct input_flag {
 void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *IF );
 
 // Sets the input data in the matrix and z array
-void set_fel_input_data( struct intergrator_input, input_flags, double *, double **, int );
+void set_fel_input_data( struct intergrator_input, input_flags *, double *, double **, int );
 
 #endif

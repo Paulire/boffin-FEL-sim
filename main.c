@@ -51,7 +51,7 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
                 fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
 
         // Sets FEL input data
-        set_fel_input_data( fel_input_data, *fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
+        set_fel_input_data( fel_input_data, fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
 
         // Integrator
         boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);

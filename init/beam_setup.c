@@ -3,13 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_math.h>
 
 #include "init.h"
 
 static inline void beam_energy_setup( struct intergrator_input * , double ** , int , int, double );
 
-void set_fel_input_data( struct intergrator_input fel_input_data, input_flags user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
+void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
 {
         // For random number gen
         gsl_rng *restrict r;
@@ -33,7 +35,7 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags us
          * for *NIX systems. For windwows a new
          * seeder will need to be created.
          */
-        if( user_in.shot_noise == true && user_in.shot_noise_seed_set == false  ) {
+        if( user_in->shot_noise == true && user_in->shot_noise_seed_set == false  ) {
                 char ch[9];
 
                 FILE *fp = fopen("/dev/urandom", "r");
@@ -42,31 +44,37 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags us
 
                 // Seed bits corispond to CPU architecture
                 for( int i=0; i<(int)sizeof( unsigned long int ); i++ ) {
-                        user_in.shot_noise_seed *= 256;
-                        user_in.shot_noise_seed += ( unsigned long int ) ch[i];
+                        user_in->shot_noise_seed *= 256;
+                        user_in->shot_noise_seed += ( unsigned char ) ch[i];
                 }
                 
-                user_in.shot_noise_seed_set = true;
+                user_in->shot_noise_seed_set = true;
+                
+                printf("%lu\n", user_in->shot_noise_seed );
 
         }
 
-        if( user_in.shot_noise_seed_set == true ) {
+        if( user_in->shot_noise_seed_set == true ) {
                 gsl_rng_env_setup();
                 T = gsl_rng_ranlxd2;
                 r = gsl_rng_alloc (T);
-                gsl_rng_set(r, user_in.shot_noise_seed);
+                gsl_rng_set(r, user_in->shot_noise_seed);
         }
 
+        double n = (double) ELECTRON_NUM*0.1;
+        double sigma = (double) 3*n/ELECTRON_NUM;
+
         for( int i=0; i<fel_input_data.N_theta; i++ ) {
-                if( user_in.shot_noise == true )
-                        theta_value = gsl_rng_uniform( r );
-                else
-                        theta_value = i*2*PI/fel_input_data.N_theta;
+                if( user_in->shot_noise == true ) { 
+                        theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
+
+                } else
+                        theta_value = i*2*M_PI/fel_input_data.N_theta;
 
                 beam_energy_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM, i, theta_value );
         }
 
-        if( user_in.shot_noise == true )
+        if( user_in->shot_noise == true )
                 gsl_rng_free (r);
 }
 
@@ -76,7 +84,8 @@ static inline void beam_energy_setup( struct intergrator_input *restrict fel_inp
         switch( fel_input_data->N_p ) {
         case 1:
                 // Cold beam
-                fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
+                // fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
+                fel_data_matrix[ i+2 ][0] = theta_value;
                 fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
                 break;
         default:
