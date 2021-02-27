@@ -7,6 +7,7 @@
 #include "fel_input_struc.h"
 #include "boffin/boffin_flags.h"
 #include "plotter/run_plot.h"
+#include "post_processing/post_porcss.h"
 #include "error.h"
 
 static inline void build_and_run_boffin( input_flags *, struct boffin_flags *  );
@@ -46,6 +47,7 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         // Alocates memeory for integration data
         int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
         double *restrict fel_z_input = ( double * ) malloc( fel_input_data.z_num * sizeof( double ));
+        double *restrict bunching_para = ( double * ) malloc( fel_input_data.z_num*sizeof( double ));
         double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
         for( int i=0; i<2*ELECTRON_NUM+2; i++)
                 fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
@@ -54,7 +56,10 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         set_fel_input_data( fel_input_data, fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
 
         // Integrator
-        boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
+        boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num );
+
+        // Bunching Paramiter calc
+        bunching_parameter( &fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
 
         // Write ansers to file
         write_to_csv( fel_input_flags->out_file, fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
@@ -64,4 +69,5 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
                 free( fel_data_matrix[i] );
         free( fel_data_matrix );
         free( fel_z_input );
+        free( bunching_para );
 }

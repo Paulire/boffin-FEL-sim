@@ -16,6 +16,9 @@ void set_data( struct intergrator_input *, int line );
 
 void read_from_config( char *name, struct intergrator_input *fel_val )
 {
+        // Some values need to have conditions regardless of if the user has set it
+        fel_val->shot_n_val = 0.01;
+
 	// File varlibles
 	char ch;
 	int is_arg = 1, line_no = 1;
@@ -91,6 +94,9 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 // If the comand line contains the input data the this shall be read instead
 void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 {
+        // Some values need to have conditions regardless of if the user has set it
+        fel_val->shot_n_val = 0.01;
+
 	// File varlibles
 	int is_arg = 1, count_char = 0;
 	
@@ -185,6 +191,8 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->z_num = atoi(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "m") == 0 ) {
 		fel_val->m = atoi(buff_num);
+	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
+		fel_val->shot_n_val = atof(buff_num);
 	} else {
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}

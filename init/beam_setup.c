@@ -1,9 +1,10 @@
 /* Sets the values for the beam */
 
+#include <gsl/gsl_machine.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdint.h>
+#include <math.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_math.h>
 
@@ -17,6 +18,7 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
         gsl_rng *restrict r;
         const gsl_rng_type *restrict T;
         double theta_value;
+        
 
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_input_data.z_0;
@@ -61,8 +63,8 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
                 gsl_rng_set(r, user_in->shot_noise_seed);
         }
 
-        double n = (double) ELECTRON_NUM*0.1;
-        double sigma = (double) 3*n/ELECTRON_NUM;
+        double n = (double) ELECTRON_NUM*fel_input_data.shot_n_val;
+        double sigma = sqrt( (double) 3*n/ELECTRON_NUM );
 
         for( int i=0; i<fel_input_data.N_theta; i++ ) {
                 if( user_in->shot_noise == true ) { 

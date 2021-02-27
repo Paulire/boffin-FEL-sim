@@ -12,6 +12,7 @@ struct intergrator_input {
 	int z_num;
 	double a_0;
 	double phi_0;
+        double shot_n_val;
 };
 
 #endif
