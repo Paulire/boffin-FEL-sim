@@ -23,11 +23,11 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 	char ch;
 	int is_arg = 1, line_no = 1;
 	FILE *fp;
-	
+        
 	// Open file then error if NULL file
 	fp = fopen(name, "r");
 	if( fp == NULL) { 
-		char errbuff[20] = "Can't access file: ";
+		char errbuff[100] = "Can't access file: ";
 		strcat(errbuff, name);
 		__error__( errbuff );
 	}
@@ -138,7 +138,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 	}
 }
 
-void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, int ELECTRON_NUM, int z_point )
+void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, double *restrict b_n, int ELECTRON_NUM, int z_point )
 {
 	FILE *fp;
 
@@ -152,6 +152,14 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 		fputs( buff_arg, fp );
 		fputs( ",", fp );
 	}
+
+	fputs( "\n", fp );		
+
+        for( int i=0; i<z_point; i++ ) {
+                snprintf(buff_arg, sizeof(buff_arg), "%.58f", b_n[i]);
+                fputs( buff_arg, fp );
+                fputs( ",", fp );
+        }
 
 	// Write all other values
 	for( int i=0; i<2*ELECTRON_NUM+2; i++ ) {
