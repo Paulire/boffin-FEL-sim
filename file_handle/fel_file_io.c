@@ -16,15 +16,18 @@ void set_data( struct intergrator_input *, int line );
 
 void read_from_config( char *name, struct intergrator_input *fel_val )
 {
+        // Some values need to have conditions regardless of if the user has set it
+        fel_val->shot_n_val = 0.01;
+
 	// File varlibles
 	char ch;
 	int is_arg = 1, line_no = 1;
 	FILE *fp;
-	
+        
 	// Open file then error if NULL file
 	fp = fopen(name, "r");
 	if( fp == NULL) { 
-		char errbuff[20] = "Can't access file: ";
+		char errbuff[100] = "Can't access file: ";
 		strcat(errbuff, name);
 		__error__( errbuff );
 	}
@@ -91,6 +94,9 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 // If the comand line contains the input data the this shall be read instead
 void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 {
+        // Some values need to have conditions regardless of if the user has set it
+        fel_val->shot_n_val = 0.01;
+
 	// File varlibles
 	int is_arg = 1, count_char = 0;
 	
@@ -132,7 +138,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 	}
 }
 
-void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, int ELECTRON_NUM, int z_point )
+void write_to_csv(  char *name, double *restrict z_val, double **restrict out_data_val, double *restrict b_n, int ELECTRON_NUM, int z_point )
 {
 	FILE *fp;
 
@@ -142,17 +148,25 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	// Write each z value to line 1
 	for( int i=0; i<z_point; i++) {
-		snprintf(buff_arg, sizeof(buff_arg), "%15.10e", z_val[i]);
+		snprintf(buff_arg, sizeof(buff_arg), "%.58f", z_val[i]);
 		fputs( buff_arg, fp );
 		fputs( ",", fp );
 	}
+
+	fputs( "\n", fp );		
+
+        for( int i=0; i<z_point; i++ ) {
+                snprintf(buff_arg, sizeof(buff_arg), "%.58f", b_n[i]);
+                fputs( buff_arg, fp );
+                fputs( ",", fp );
+        }
 
 	// Write all other values
 	for( int i=0; i<2*ELECTRON_NUM+2; i++ ) {
 		fputs( "\n", fp );		
 		
 		for( int e=0; e<z_point; e++ ) {
-			snprintf( buff_arg, sizeof( buff_arg ), "%15.10e", out_data_val[i][e] );
+			snprintf( buff_arg, sizeof( buff_arg ), "%.58f", out_data_val[i][e] );
 			fputs( buff_arg, fp );
 			fputs( ",", fp );
 		}
@@ -185,6 +199,8 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->z_num = atoi(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "m") == 0 ) {
 		fel_val->m = atoi(buff_num);
+	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
+		fel_val->shot_n_val = atof(buff_num);
 	} else {
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}

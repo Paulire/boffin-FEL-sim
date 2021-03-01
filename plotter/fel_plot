@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+
+"""
+File
+    Line 1: z
+    Line 2: b_n
+    Line 3: a
+    Line 4+: theta
+    Line e+: p
+"""
 import sys
 
 if len(sys.argv) <= 2:
@@ -7,13 +16,18 @@ if len(sys.argv) <= 2:
 import numpy as np
 from matplotlib import pyplot as plt
 
-z = np.genfromtxt( sys.argv[1], delimiter=',')[0,:]
+try:
+    data = np.genfromtxt( sys.argv[1], delimiter=',')
+except:
+    print("\nE: Can't load file '" + sys.argv[1] + "'");
+    exit(0)
 
+z = data[0,:]
 
 for i in range(2, len(sys.argv)):
     # Plot a
     if sys.argv[i] == "-a":
-        a = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
+        a = data[2,:]
         plt.plot(z,a,'-b')
         plt.yscale('log')
         plt.xlabel("$z\u0305$", size='x-large')
@@ -23,8 +37,7 @@ for i in range(2, len(sys.argv)):
 
     # Plot phi
     elif sys.argv[i] == "-phi":
-        phi = np.genfromtxt( sys.argv[1], delimiter=',')[1,:]
-        phi = np.genfromtxt( sys.argv[1], delimiter=',')[2,:]
+        phi = data[3,:]
         plt.plot(z,phi,'-b')
         plt.xlabel("$z\u0305$", size='x-large')
         plt.ylabel("$\u03C6$", size='x-large')
@@ -33,15 +46,15 @@ for i in range(2, len(sys.argv)):
 
     # Phot phase space
     elif sys.argv[i] == "-pha":
-        ELE_NUM = int( (len( np.genfromtxt( sys.argv[1], delimiter=',')[ : , 0 ] ) -3)/2 )
+        ELE_NUM = int( (len( data[ : , 0 ] ) -4)/2 )
         position = float(sys.argv[i+1])
         point = int( position*(len(z)-1)/z[-2])
         if( point > len(z)-1 ):
             point = len(z)-1
-        theta = np.genfromtxt( sys.argv[1], delimiter=',')[ 3:(ELE_NUM+3), point ]
-        p = np.genfromtxt( sys.argv[1], delimiter=',')[ (ELE_NUM+3):, point ]
-        a = np.genfromtxt( sys.argv[1], delimiter=',')[ 1, point ]
-        phi = np.genfromtxt( sys.argv[1], delimiter=',')[ 2, point ]
+        theta = data[ 4:(ELE_NUM+4), point ]
+        p = data[ (ELE_NUM+4):, point ]
+        a = data[ 2, point ]
+        phi = data[ 3, point ]
 
         # Seperatrix
         data_r = np.linspace(0, 2*np.pi, 1000)

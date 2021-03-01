@@ -7,7 +7,7 @@
 
 #include "../init/init.h"
 
-static inline void fel_plot( struct input_flags in_flags )
+static inline void fel_plot( input_flags in_flags )
 {
 	char pltcmdbuff[200];
 	int plot_0 = 1;

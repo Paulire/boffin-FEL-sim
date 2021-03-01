@@ -1,18 +1,25 @@
 /* Sets the values for the beam */
 
+#include <gsl/gsl_machine.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_math.h>
 
 #include "init.h"
 
-// Function Decleration
-static inline void cold_beam_setup( double **restrict, int );
-static inline void hot_beam_setup( struct intergrator_input *restrict ,  double **restrict , int  );
-float frand( void );
+static inline void beam_energy_setup( struct intergrator_input * , double ** , int , int, double );
 
-void set_fel_input_data( struct intergrator_input fel_input_data, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
+void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
 {
+        // For random number gen
+        gsl_rng *restrict r;
+        const gsl_rng_type *restrict T;
+        double theta_value;
+        
+
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_input_data.z_0;
 	fel_data_matrix[0][0] = fel_input_data.a_0;
@@ -23,31 +30,68 @@ void set_fel_input_data( struct intergrator_input fel_input_data, double *restri
 		z[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
 	}
 
-	switch( fel_input_data.N_p ) {
-		case 1:
-                        cold_beam_setup( fel_data_matrix, ELECTRON_NUM );
-			break;
+        /* Creates a random number between 0 and 1
+         * It uses the RANLUX and outputs a 48 bit
+         * double. The random seed is gained from
+         * urandom device file, this is only valed
+         * for *NIX systems. For windwows a new
+         * seeder will need to be created.
+         */
+        if( user_in->shot_noise == true && user_in->shot_noise_seed_set == false  ) {
+                char ch[9];
 
-		default:
-                        hot_beam_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM );
+                FILE *fp = fopen("/dev/urandom", "r");
+                (void)! fread( ch, 1, sizeof( ch ), fp );
+                fclose( fp );
 
-                  break;
-	}
-}
+                // Seed bits corispond to CPU architecture
+                for( int i=0; i<(int)sizeof( unsigned long int ); i++ ) {
+                        user_in->shot_noise_seed *= 256;
+                        user_in->shot_noise_seed += ( unsigned char ) ch[i];
+                }
+                
+                user_in->shot_noise_seed_set = true;
+                
+                printf("%lu\n", user_in->shot_noise_seed );
 
-// Coldbeam Phase space settup
-static inline void cold_beam_setup( double **restrict fel_data_matrix, int ELECTRON_NUM )
-{
-        for( int i=0; i<ELECTRON_NUM; i++) {
-                fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
-                fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
         }
+
+        if( user_in->shot_noise_seed_set == true ) {
+                gsl_rng_env_setup();
+                T = gsl_rng_ranlxd2;
+                r = gsl_rng_alloc (T);
+                gsl_rng_set(r, user_in->shot_noise_seed);
+        }
+
+        double n = (double) ELECTRON_NUM*fel_input_data.shot_n_val;
+        double sigma = sqrt( (double) 3*n/ELECTRON_NUM );
+
+        for( int i=0; i<fel_input_data.N_theta; i++ ) {
+                if( user_in->shot_noise == true ) { 
+                        theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
+
+                } else
+                        theta_value = i*2*M_PI/fel_input_data.N_theta;
+
+                beam_energy_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM, i, theta_value );
+        }
+
+        if( user_in->shot_noise == true )
+                gsl_rng_free (r);
 }
 
-// Hot Beam Phase space settup
-static inline void hot_beam_setup( struct intergrator_input *restrict fel_input_data,  double **restrict fel_data_matrix, int ELECTRON_NUM )
+static inline void beam_energy_setup( struct intergrator_input *restrict fel_input_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int i, double theta_value )
 {
-        for( int i=0; i<fel_input_data->N_theta; i++ ) {
+
+        switch( fel_input_data->N_p ) {
+        case 1:
+                // Cold beam
+                // fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
+                fel_data_matrix[ i+2 ][0] = theta_value;
+                fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
+                break;
+        default:
+                // Hot beam
                 for( int e=0; e<fel_input_data->N_p; e++ ) {
                         // Determine current index
                         int index = i*(fel_input_data->N_p)+e;
@@ -55,42 +99,11 @@ static inline void hot_beam_setup( struct intergrator_input *restrict fel_input_
                         int p_indx = 2+ELECTRON_NUM+index;
 
                         // Set theta and p data
-                        fel_data_matrix[t_indx][0] = (double) i*2*PI/fel_input_data->N_theta;
+                        fel_data_matrix[t_indx][0] = (double) theta_value;
                         fel_data_matrix[p_indx][0] = (double) e*2*fel_input_data->sigma*fel_input_data->m/(fel_input_data->N_p-1) - fel_input_data->sigma*fel_input_data->m;
 
-				}
-			}
-}
+                }
 
-// Random Float Generation
-float frand( void )
-{
-        int val, s;
-        float randnum;
-        char ch[5];
-
-        FILE *fp = fopen( "/dev/urandom", "r" );
-        fgets( ch, sizeof(ch) - 1, fp );
-        fclose( fp );
-        
-        for( int i=0; i<sizeof(ch)-1; i++ ) {
-                val += (int) ch[i]*val;
+                break;
         }
-
-        if( val == 0 ){
-                s = time(NULL);
-
-        } else {
-                s = val*time(NULL);
-        }
-
-        if( s<0 ) {
-                s *= -1;
-        }
-
-        srand( s );
-        
-        
-
-        return ( float )(rand()%1000000)/1000000;
 }
