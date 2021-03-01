@@ -52,14 +52,16 @@ example of how to use boffin. It should be noted that all commands contain
 an '=' and are ended by a ';'
 
 **input_file.bffn**
-```N_theta=1000;
+```
+N_theta=1000;
 phi_0=0;
 a_0=0.00001;
 z_f=20;
 z_0=0;
 z_num = 1000;
 N_p = 1;
-shot_noise = 0```
+shot_noise = 0
+```
 
 This is run in the terminal:
 
