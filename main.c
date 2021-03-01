@@ -10,7 +10,7 @@
 #include "post_processing/post_porcss.h"
 #include "error.h"
 
-static inline void build_and_run_boffin( input_flags *, struct boffin_flags *  );
+static inline void build_and_run_boffin( input_flags * );
 
 int main( int argc, char *argv[])
 {
@@ -23,7 +23,7 @@ int main( int argc, char *argv[])
 
 	// Build and run model in needed
 	if( fel_input_flags.plot_only_mode == false )
-                build_and_run_boffin( &fel_input_flags, &bffn_flags );
+                build_and_run_boffin( &fel_input_flags );
 	
 	
 	// Plot if needed. 
@@ -34,7 +34,7 @@ int main( int argc, char *argv[])
 	return 0;
 }
 
-static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, struct boffin_flags *restrict bffn_flags  ){
+static inline void build_and_run_boffin( input_flags *restrict fel_input_flags){
 
         // File Handle
         struct intergrator_input fel_input_data;	
@@ -47,7 +47,6 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         // Alocates memeory for integration data
         int ELECTRON_NUM = fel_input_data.N_theta*fel_input_data.N_p;
         double *restrict fel_z_input = ( double * ) malloc( fel_input_data.z_num * sizeof( double ));
-        double *restrict bunching_para = ( double * ) malloc( fel_input_data.z_num*sizeof( double ));
         double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
         for( int i=0; i<2*ELECTRON_NUM+2; i++)
                 fel_data_matrix[i] = ( double *) malloc( fel_input_data.z_num * sizeof( double ) ); // Again for each z data
@@ -59,10 +58,11 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num );
 
         // Bunching Paramiter calc
+        double *restrict bunching_para = ( double * ) malloc( fel_input_data.z_num*sizeof( double ));
         bunching_parameter( &fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
 
         // Write ansers to file
-        write_to_csv( fel_input_flags->out_file, fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data.z_num);
+        write_to_csv( fel_input_flags->out_file, fel_z_input, fel_data_matrix, bunching_para, ELECTRON_NUM, fel_input_data.z_num);
 
         // Return memory for input data
         for( int i=0; i<2*ELECTRON_NUM+2; i++ )

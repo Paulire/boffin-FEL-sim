@@ -41,7 +41,7 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
                 char ch[9];
 
                 FILE *fp = fopen("/dev/urandom", "r");
-                fread( ch, 1, sizeof( ch ), fp );
+                (void)! fread( ch, 1, sizeof( ch ), fp );
                 fclose( fp );
 
                 // Seed bits corispond to CPU architecture

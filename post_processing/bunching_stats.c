@@ -24,11 +24,11 @@ void bunching_parameter( struct intergrator_input *restrict IN, double **restric
                 b_n_temp = gsl_complex_add( b_n_temp, gsl_complex_polar( g_j, -fel_data_matrix[2+j][i] ) );
 
                 if( j == ELECTRON_NUM-1 ) {
-                        j = 0;
+                        b_n_temp = gsl_complex_mul( gsl_complex_polar( (double) 1/IN->N_theta,0) , b_n_temp );
                         b_n[i] = gsl_complex_abs( b_n_temp );
-                        b_n[i] *= (1/IN->N_theta);
+                        GSL_SET_COMPLEX( &b_n_temp, 0, 0 );
+                        j = 0;
                         i++;
                 }
         }
-
 }
