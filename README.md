@@ -65,8 +65,8 @@ shot_noise = 0
 
 This is run in the terminal:
 
-    ```$ boffin -i input_file.bffn -o out_data.csv -ap```
+     $ boffin -i input_file.bffn -o out_data.csv -ap
 
 A user can bypass the input file and use CMDMODE:
 
-     ```$ boffin -o output.csv -CMDMODE "N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;" -ap```
+     $ boffin -o output.csv -CMDMODE "N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;" -ap
