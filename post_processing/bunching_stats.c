@@ -1,3 +1,5 @@
+/* Bunching parramiter is calulated here */
+
 #include <math.h>
 #include <gsl/gsl_complex.h>
 #include <gsl/gsl_complex_math.h>
