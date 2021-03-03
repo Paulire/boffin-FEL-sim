@@ -23,6 +23,8 @@ typedef struct input_flag {
                 bool shot_noise;
                 unsigned long int shot_noise_seed;
                 bool shot_noise_seed_set;
+                bool shot_noise_theta;
+                bool shot_noise_both;
 } input_flags;
 
 // Controls input arguments and adjusts relevent input flags

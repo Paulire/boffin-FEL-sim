@@ -32,6 +32,8 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 	IF->plot_phase = false;
 	IF->cmd_mode = false;
         IF->shot_noise = false;
+        IF->shot_noise_both = false;
+        IF->shot_noise_theta = false;
 
 	for( int i=1; i<argc; i++)
 	{
@@ -82,7 +84,11 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 
                 } else if( strcmp("-s", argv[i]) == 0 ) {
                         IF->shot_noise = true;
+                        IF->shot_noise_theta = true;
 
+                } else if( strcmp("-sa", argv[i]) == 0 ) {
+                        IF->shot_noise = true;
+                        IF->shot_noise_both = true;
                 } else if( strcmp("--seed", argv[i]) == 0 ){
 			if( i == argc-1)
 				__error__( "No command line input for --seed" );

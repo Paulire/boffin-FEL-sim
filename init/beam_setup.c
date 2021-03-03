@@ -10,14 +10,11 @@
 
 #include "init.h"
 
-static inline void beam_energy_setup( struct intergrator_input * , double ** , int , int, double );
-
 void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
 {
         // For random number gen
         gsl_rng *restrict r;
         const gsl_rng_type *restrict T;
-        double theta_value;
         
 
 	// Set z = 0 data for z, a and phi
@@ -65,45 +62,49 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
 
         double n = (double) ELECTRON_NUM*fel_input_data.shot_n_val;
         double sigma = sqrt( (double) 3*n/ELECTRON_NUM );
+        double p_value;
+        double theta_value;
+        int i, e;
 
-        for( int i=0; i<fel_input_data.N_theta; i++ ) {
-                if( user_in->shot_noise == true ) { 
-                        theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
+        for( i=0, e=0; i*fel_input_data.N_p<ELECTRON_NUM; e++ ) {
+                if( user_in->shot_noise_theta == true ) {
+                        if( e == 0 )
+                                theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
 
-                } else
-                        theta_value = i*2*M_PI/fel_input_data.N_theta;
+                        p_value = e*2*fel_input_data.sigma/(fel_input_data.N_p-1) - fel_input_data.sigma;
 
-                beam_energy_setup( &fel_input_data, fel_data_matrix, ELECTRON_NUM, i, theta_value );
+                } else if( user_in->shot_noise_both == true ) {
+                        theta_value = (i + gsl_rng_uniform( r ) )*2*M_PI/fel_input_data.N_theta;
+                        
+                        p_value = ( e + gsl_rng_uniform( r ) - 0.5 )*2*fel_input_data.sigma/(fel_input_data.N_p-1)
+                                - fel_input_data.sigma;
+
+                } else {
+                        if( e == 0 )
+                                theta_value = i*2*M_PI/fel_input_data.N_theta;
+
+                        if( fel_input_data.N_p == 1 )
+                                p_value = (double) 0;
+                        else
+                                p_value = e*2*fel_input_data.sigma/(fel_input_data.N_p-1) - fel_input_data.sigma;
+
+                }
+
+                int index = i*(fel_input_data.N_p)+e;
+                int t_indx = 2+index;
+                int p_indx = 2+ELECTRON_NUM+index;
+
+                fel_data_matrix[t_indx][0] = (double) theta_value;
+                fel_data_matrix[p_indx][0] = (double) p_value;
+
+                if( e == fel_input_data.N_p - 1 ) {
+                        i++;
+                        e = -1;
+                }
+
         }
 
         if( user_in->shot_noise == true )
                 gsl_rng_free (r);
 }
 
-static inline void beam_energy_setup( struct intergrator_input *restrict fel_input_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int i, double theta_value )
-{
-
-        switch( fel_input_data->N_p ) {
-        case 1:
-                // Cold beam
-                // fel_data_matrix[ i+2 ][0] = i*2*PI/ELECTRON_NUM;
-                fel_data_matrix[ i+2 ][0] = theta_value;
-                fel_data_matrix[ i+2+ELECTRON_NUM ][0] = 0;
-                break;
-        default:
-                // Hot beam
-                for( int e=0; e<fel_input_data->N_p; e++ ) {
-                        // Determine current index
-                        int index = i*(fel_input_data->N_p)+e;
-                        int t_indx = 2+index;
-                        int p_indx = 2+ELECTRON_NUM+index;
-
-                        // Set theta and p data
-                        fel_data_matrix[t_indx][0] = (double) theta_value;
-                        fel_data_matrix[p_indx][0] = (double) e*2*fel_input_data->sigma*fel_input_data->m/(fel_input_data->N_p-1) - fel_input_data->sigma*fel_input_data->m;
-
-                }
-
-                break;
-        }
-}
