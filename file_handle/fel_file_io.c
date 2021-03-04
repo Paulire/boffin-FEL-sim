@@ -54,6 +54,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 			i--;
 
 		} else {
+			
 		// Check argument before =
 		switch( is_arg ) {
                 case 1:

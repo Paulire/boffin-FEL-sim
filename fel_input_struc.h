@@ -1,7 +1,7 @@
 #ifndef _FEL_INIPUT_STRUC_H
 #define _FEL_INIPUT_STRUC_H
 
-struct intergrator_input {
+typedef struct intergrator_input {
 	int N_theta;	// Points in theta
 	int N_p;	// Electron per theta soace	
 	double off_p;	// P offset
@@ -13,6 +13,7 @@ struct intergrator_input {
 	double a_0;
 	double phi_0;
         double shot_n_val;
-};
+        unsigned long int shot_noise_seed;
+} fel_input_values;
 
 #endif

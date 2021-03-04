@@ -10,7 +10,7 @@
 
 #include "init.h"
 
-void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
+void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
 {
         // For random number gen
         gsl_rng *restrict r;
@@ -18,13 +18,13 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
         
 
 	// Set z = 0 data for z, a and phi
-	z[0] = fel_input_data.z_0;
-	fel_data_matrix[0][0] = fel_input_data.a_0;
-	fel_data_matrix[1][0] = fel_input_data.phi_0;
+	z[0] = fel_in->z_0;
+	fel_data_matrix[0][0] = fel_in->a_0;
+	fel_data_matrix[1][0] = fel_in->phi_0;
 
 	// Sets z data like a linspace
-	for( int i=0; i<fel_input_data.z_num; i++) {
-		z[i] = fel_input_data.z_0+(i)*( fel_input_data.z_f - fel_input_data.z_0 )/(fel_input_data.z_num-1);
+	for( int i=0; i<fel_in->z_num; i++) {
+		z[i] = fel_in->z_0+(i)*( fel_in->z_f - fel_in->z_0 )/(fel_in->z_num-1);
 	}
 
         /* Creates a random number between 0 and 1
@@ -43,13 +43,13 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
 
                 // Seed bits corispond to CPU architecture
                 for( int i=0; i<(int)sizeof( unsigned long int ); i++ ) {
-                        user_in->shot_noise_seed *= 256;
-                        user_in->shot_noise_seed += ( unsigned char ) ch[i];
+                        fel_in->shot_noise_seed *= 256;
+                        fel_in->shot_noise_seed += ( unsigned char ) ch[i];
                 }
                 
                 user_in->shot_noise_seed_set = true;
                 
-                printf("%lu\n", user_in->shot_noise_seed );
+                printf("%lu\n", fel_in->shot_noise_seed );
 
         }
 
@@ -57,47 +57,48 @@ void set_fel_input_data( struct intergrator_input fel_input_data, input_flags *r
                 gsl_rng_env_setup();
                 T = gsl_rng_ranlxd2;
                 r = gsl_rng_alloc (T);
-                gsl_rng_set(r, user_in->shot_noise_seed);
+                gsl_rng_set(r, fel_in->shot_noise_seed);
         }
 
-        double n = (double) ELECTRON_NUM*fel_input_data.shot_n_val;
+        // Phase space is created from the random numbers
+        double n = (double) ELECTRON_NUM*fel_in->shot_n_val;
         double sigma = sqrt( (double) 3*n/ELECTRON_NUM );
         double p_value;
         double theta_value;
         int i, e;
 
-        for( i=0, e=0; i*fel_input_data.N_p<ELECTRON_NUM; e++ ) {
-                if( user_in->shot_noise_theta == true ) {
+        for( i=0, e=0; i*fel_in->N_p<ELECTRON_NUM; e++ ) {
+                if( user_in->shot_noise_theta == true ) { 
                         if( e == 0 )
                                 theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
 
-                        p_value = e*2*fel_input_data.sigma/(fel_input_data.N_p-1) - fel_input_data.sigma;
+                        p_value = e*2*fel_in->sigma/(fel_in->N_p-1) - fel_in->sigma;
 
                 } else if( user_in->shot_noise_both == true ) {
-                        theta_value = (i + gsl_rng_uniform( r ) )*2*M_PI/fel_input_data.N_theta;
+                        theta_value = (i + gsl_rng_uniform( r ) )*2*M_PI/fel_in->N_theta;
                         
-                        p_value = ( e + gsl_rng_uniform( r ) - 0.5 )*2*fel_input_data.sigma/(fel_input_data.N_p-1)
-                                - fel_input_data.sigma;
+                        p_value = ( e + gsl_rng_uniform( r ) - 0.5 )*2*fel_in->sigma/(fel_in->N_p-1)
+                                - fel_in->sigma;
 
                 } else {
                         if( e == 0 )
-                                theta_value = i*2*M_PI/fel_input_data.N_theta;
+                                theta_value = i*2*M_PI/fel_in->N_theta;
 
-                        if( fel_input_data.N_p == 1 )
+                        if( fel_in->N_p == 1 )
                                 p_value = (double) 0;
                         else
-                                p_value = e*2*fel_input_data.sigma/(fel_input_data.N_p-1) - fel_input_data.sigma;
+                                p_value = e*2*fel_in->sigma/(fel_in->N_p-1) - fel_in->sigma;
 
                 }
 
-                int index = i*(fel_input_data.N_p)+e;
+                int index = i*(fel_in->N_p)+e;
                 int t_indx = 2+index;
                 int p_indx = 2+ELECTRON_NUM+index;
 
                 fel_data_matrix[t_indx][0] = (double) theta_value;
                 fel_data_matrix[p_indx][0] = (double) p_value;
 
-                if( e == fel_input_data.N_p - 1 ) {
+                if( e == fel_in->N_p - 1 ) {
                         i++;
                         e = -1;
                 }

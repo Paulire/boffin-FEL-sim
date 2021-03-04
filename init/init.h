@@ -5,8 +5,7 @@
 
 #include "../fel_input_struc.h"
 #include "../boffin/boffin_flags.h"
-
-#define PI 3.14159265358979323846 
+#include "../fel_input_struc.h"
 
 // These flags are spesiffic to this BOFfIn interface not the BOFfIn Integrator!!!
 typedef struct input_flag {
@@ -21,16 +20,15 @@ typedef struct input_flag {
 		bool plot_phase;
 		double plot_phase_z;
                 bool shot_noise;
-                unsigned long int shot_noise_seed;
                 bool shot_noise_seed_set;
                 bool shot_noise_theta;
                 bool shot_noise_both;
 } input_flags;
 
 // Controls input arguments and adjusts relevent input flags
-void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *IF );
+void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *IF );
 
 // Sets the input data in the matrix and z array
-void set_fel_input_data( struct intergrator_input, input_flags *, double *, double **, int );
+void set_fel_input_data( fel_input_values *, input_flags *, double *, double **, int );
 
 #endif

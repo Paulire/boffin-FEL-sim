@@ -7,20 +7,18 @@
 
 #include "init.h"
 #include "../error/error.h"
+#include "../fel_input_struc.h"
 
 
 static inline void info_help( bool  );
 
-void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *IF )
+void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *IF )
 {
 
 	// If no input then error
 	if( argc == 1) {
 		__error__( "No input arguments\n Try boffin --help" );
 	}
-
-	// Set default flags BOFfIn
-	BF->should_print = true;
 
 	// And input
 	strcpy( IF->in_file , "\0" ) ;
@@ -42,9 +40,6 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 
 		} else if(strcmp("--HELP", argv[i]) == 0 ) {
 			info_help( true );
-
-		} else if(strcmp("-v", argv[i]) == 0 ) {
-			BF->should_print = false;
 
 		} else if(strcmp("-i", argv[i]) == 0 ) {
 			if( argc == i+1 ) { __error__( "No input file after -i"  ); }
@@ -94,9 +89,9 @@ void arg_handle( int argc, char *argv[], struct boffin_flags *BF, input_flags *I
 				__error__( "No command line input for --seed" );
                         IF->shot_noise = true;
                         IF->shot_noise_seed_set = true;
-                        IF->shot_noise_seed = strtoul( argv[i+1], (char **)'\0', 10 );
+                        INT_IN->shot_noise_seed = strtoul( argv[i+1], (char **)'\0', 10 );
 
-                        printf("%ld", IF->shot_noise_seed);
+                        printf("%ld", INT_IN->shot_noise_seed);
                         exit(0);
                 }else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
