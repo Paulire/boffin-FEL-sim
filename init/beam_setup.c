@@ -15,7 +15,6 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
         // For random number gen
         gsl_rng *restrict r;
         const gsl_rng_type *restrict T;
-        
 
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_in->z_0;

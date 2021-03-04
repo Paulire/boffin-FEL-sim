@@ -4,7 +4,6 @@
 #include <stdbool.h>
 
 #include "../fel_input_struc.h"
-#include "../boffin/boffin_flags.h"
 #include "../fel_input_struc.h"
 
 // These flags are spesiffic to this BOFfIn interface not the BOFfIn Integrator!!!

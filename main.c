@@ -6,7 +6,6 @@
 #include "file_handle/file_handle.h"
 #include "boffin/fel_intergrator.h"
 #include "fel_input_struc.h"
-#include "boffin/boffin_flags.h"
 #include "plotter/run_plot.h"
 #include "post_processing/post_porcss.h"
 #include "error.h"
