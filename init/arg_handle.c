@@ -70,7 +70,11 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 			IF->plot_phase_z = atof(argv[i+1]);
 			i++;
 
-		} else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
+                } else if( strcmp("-bp", argv[i]) == 0 ) {
+                        IF->plot = true;
+                        IF->plot_bunch = true;
+
+                }else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
 			if( i == argc-1)
 				__error__( "No command line input for -CMDMODE" );
 			IF->cmd_mode = true;

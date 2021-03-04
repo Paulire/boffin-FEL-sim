@@ -28,7 +28,7 @@ int main( int argc, char *argv[])
 	
 	// Plot if needed. 
         if( fel_input_flags.plot == true )
-                fel_plot( fel_input_flags );
+                fel_plot( &fel_input_flags );
 	
 
 	return 0;

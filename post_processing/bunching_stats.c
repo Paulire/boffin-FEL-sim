@@ -29,7 +29,7 @@ void bunching_parameter( struct intergrator_input *restrict IN, double **restric
                         b_n_temp = gsl_complex_mul( gsl_complex_polar( (double) 1/IN->N_theta,0) , b_n_temp );
                         b_n[i] = gsl_complex_abs( b_n_temp );
                         GSL_SET_COMPLEX( &b_n_temp, 0, 0 );
-                        j = 0;
+                        j = -1;
                         i++;
                 }
         }

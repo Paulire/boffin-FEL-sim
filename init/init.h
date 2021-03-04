@@ -18,6 +18,7 @@ typedef struct input_flag {
 		bool plot_only_mode;
 		bool plot_phase;
 		double plot_phase_z;
+                bool plot_bunch;
                 bool shot_noise;
                 bool shot_noise_seed_set;
                 bool shot_noise_theta;

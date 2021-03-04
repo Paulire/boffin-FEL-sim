@@ -7,26 +7,31 @@
 
 #include "../init/init.h"
 
-static inline void fel_plot( input_flags in_flags )
+static inline void fel_plot( input_flags *restrict in_flags )
 {
 	char pltcmdbuff[200];
 	int plot_0 = 1;
 
-	if( in_flags.plot_a == true) {
-		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -a &", in_flags.out_file );
+	if( in_flags->plot_a == true) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -a &", in_flags->out_file );
 		plot_0 = system( pltcmdbuff );
 	}
 
-	if( in_flags.plot_phi == true) {
-		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -phi &", in_flags.out_file );
+	if( in_flags->plot_phi == true) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -phi &", in_flags->out_file );
 		plot_0 = system( pltcmdbuff );
 	}
 
-	if( in_flags.plot_phase == true) {
-		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha %lf &", in_flags.out_file, in_flags.plot_phase_z );
+	if( in_flags->plot_phase == true) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -pha %lf &", in_flags->out_file, in_flags->plot_phase_z );
 		plot_0 = system( pltcmdbuff );
 
 	}
+
+        if( in_flags->plot_bunch == true ) {
+		snprintf( pltcmdbuff, sizeof( pltcmdbuff ), "fel_plot %100s -bp &", in_flags->out_file );
+		plot_0 = system( pltcmdbuff );
+        }
 
 	plot_0++;
 }
