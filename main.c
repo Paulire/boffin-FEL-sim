@@ -60,11 +60,11 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
 
         // Integrator
         boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data->z_num );
-
+        
         // Bunching Paramiter calc
         double *restrict bunching_para = ( double * ) malloc( fel_input_data->z_num*sizeof( double ));
         if( bunching_para == NULL )
-                printf(" W: Could not allocate memory for ouput data in bunching parameter, file output will be zero. ");
+                __warn__(" W: Could not allocate memory for ouput data in bunching parameter, file output will be zero. ");
         else
                 bunching_parameter( fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
 

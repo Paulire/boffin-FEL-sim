@@ -28,6 +28,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 	IF->plot_phi = false;
 	IF->plot_only_mode = false;
 	IF->plot_phase = false;
+        IF->plot_bunch = false;
 	IF->cmd_mode = false;
         IF->shot_noise = false;
         IF->shot_noise_both = false;
