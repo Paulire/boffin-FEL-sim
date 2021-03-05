@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <string.h>
 
 #include "init/init.h"
 #include "file_handle/file_handle.h"
