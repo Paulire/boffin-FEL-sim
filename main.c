@@ -8,7 +8,7 @@
 #include "fel_input_struc.h"
 #include "plotter/run_plot.h"
 #include "post_processing/post_porcss.h"
-#include "error.h"
+#include "error/error.h"
 
 static inline void build_and_run_boffin( input_flags *, fel_input_values *);
 
@@ -42,11 +42,18 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
                 read_from_config( fel_input_flags->in_file, fel_input_data);
 
         // Alocates memeory for integration data
+
         int ELECTRON_NUM = fel_input_data->N_theta*fel_input_data->N_p;
         double *restrict fel_z_input = ( double * ) malloc( fel_input_data->z_num * sizeof( double ));
         double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
-        for( int i=0; i<2*ELECTRON_NUM+2; i++)
+        if( fel_z_input == NULL || fel_data_matrix == NULL )
+                __error__("Could not allocate memory for ouput data.");
+
+        for( int i=0; i<2*ELECTRON_NUM+2; i++) {
                 fel_data_matrix[i] = ( double *) malloc( fel_input_data->z_num * sizeof( double ) ); // Again for each z data
+                if( fel_data_matrix[i] == NULL )
+                        __error__("Could not allocate memory for ouput data.");
+        }
 
         // Sets FEL input data
         set_fel_input_data( fel_input_data, fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
@@ -56,7 +63,10 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
 
         // Bunching Paramiter calc
         double *restrict bunching_para = ( double * ) malloc( fel_input_data->z_num*sizeof( double ));
-        bunching_parameter( fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
+        if( bunching_para == NULL )
+                printf(" W: Could not allocate memory for ouput data in bunching parameter, file output will be zero. ");
+        else
+                bunching_parameter( fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
 
         // Write ansers to file
         write_to_csv( fel_input_flags->out_file, fel_z_input, fel_data_matrix, bunching_para, ELECTRON_NUM, fel_input_data->z_num);

@@ -156,8 +156,12 @@ void write_to_csv(  char *name, double *restrict z_val, double **restrict out_da
 
 	fputs( "\n", fp );		
 
+        // Bunching  line 2
         for( int i=0; i<z_point; i++ ) {
-                snprintf(buff_arg, sizeof(buff_arg), "%.58f", b_n[i]);
+                if( b_n == NULL )
+                        snprintf(buff_arg, sizeof(buff_arg), "%.58f", 0.000);
+                else
+                        snprintf(buff_arg, sizeof(buff_arg), "%.58f", b_n[i]);
                 fputs( buff_arg, fp );
                 fputs( ",", fp );
         }

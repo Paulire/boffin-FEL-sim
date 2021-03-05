@@ -7,16 +7,15 @@
 
 #include "fel_intergrator.h"
 
-/////////////////////////////////////////////
-// For arrays corisponding to input data:  //
-//	array[0] is a    			       //
-//	array[1] is phi			       //
-//	array[2] is thata			       //
-//  	...					       //
-//	array[2+N] is p			       //
-//  	...					       //
-/////////////////////////////////////////////
-
+/*
+ * For arrays corisponding to input data:
+ *	array[0] is a
+ *	array[1] is phi
+ *	array[2] is thata
+ *  	...
+ *	array[2+N] is p
+ *  	...
+*/
 
 // Integration functions
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -29,7 +28,7 @@ static inline int fel_ode( double x, const double y[], double f[], register void
 	for( int i=0; i<ELEC_NUM; i++ ) {
 		int p_i_val = 2+i+ELEC_NUM;
 		int t_i_val = 2+i;
-		f[ t_i_val ] = y[ p_i_val ];											// dthetadz = p
+		f[ t_i_val ] = y[ p_i_val ];				        // dthetadz = p
 		f[ p_i_val ] = -2*y[ 0 ]*cos( y[ t_i_val ] + y[1] );		// dpdz = -2a*cos( theta + phi )
 		out[0] += (double)cos( y[ t_i_val ] + y[1] );
 		out[1] += (double)sin( y[ t_i_val ] + y[1] );
