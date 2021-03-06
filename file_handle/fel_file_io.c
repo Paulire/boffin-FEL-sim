@@ -206,6 +206,8 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->m = atoi(buff_num);
 	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
 		fel_val->shot_n_val = atof(buff_num);
+	} else if( strcmp( (char*)buff_arg, "mean_electron") == 0 ) {
+		fel_val->mean_elec = atoi(buff_num);
 	} else {
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}
