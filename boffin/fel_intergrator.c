@@ -18,6 +18,9 @@
 */
 
 // Integration functions
+#define P_I_VAL  2+i+ELEC_NUM
+#define T_I_VAL  2+i
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 static inline int fel_ode( double x, const double y[], double f[], register void *params )
 {
@@ -26,16 +29,16 @@ static inline int fel_ode( double x, const double y[], double f[], register void
 
 	// Sets the integral for each p and theta value
 	for( int i=0; i<ELEC_NUM; i++ ) {
-		int p_i_val = 2+i+ELEC_NUM;
-		int t_i_val = 2+i;
-		f[ t_i_val ] = y[ p_i_val ];				        // dthetadz = p
-		f[ p_i_val ] = -2*y[ 0 ]*cos( y[ t_i_val ] + y[1] );		// dpdz = -2a*cos( theta + phi )
-		out[0] += (double)cos( y[ t_i_val ] + y[1] );
-		out[1] += (double)sin( y[ t_i_val ] + y[1] );
+                double tmp = y[ T_I_VAL ] + y[1];                       // Shaves ~25% run time with line bellow :D
+                double cos_t = cos( tmp );
+		f[ T_I_VAL ] = y[ P_I_VAL ];				// dthetadz = p
+		f[ P_I_VAL ] = -2*y[ 0 ]* cos_t;		        // dpdz = -2a*cos( theta + phi )
+		out[0] += ( double ) cos_t;
+		out[1] += ( double ) sin( tmp );
 	}
 
-	out[0] /= (double)(ELEC_NUM);
-	out[1] /= (double)(ELEC_NUM);
+	out[0] /= ( double ) ELEC_NUM;
+	out[1] /= ( double ) ELEC_NUM;
 	
 	f[0] = (double)out[0];
 	f[1] = (double)-out[1]/y[0];
@@ -92,15 +95,14 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	gsl_odeiv_system sys = { fel_ode, NULL, 2+2*ELECTRON_NUM, &ELECTRON_NUM };
 	
 	double *restrict y = (double*) malloc( (2*ELECTRON_NUM+2)*sizeof(double));
-      for( int e=0; e< ( 2*ELECTRON_NUM+2 ); e++ ) {
-	   y[e] = fel_data_matrix[e][0]; 
-      }
+        for( int e=0; e< ( 2*ELECTRON_NUM+2 ); e++ ) {
+                y[e] = fel_data_matrix[e][0]; 
+        }
 
 	// Repeats for each z value, only these are recorded
 	for( int i=0; i<Z_NUM-1; i++ ) {
 		double z_i = z_data[ i ], z_step = z_data[ i+1 ];
 		double h = 1e-6;
-
 
 		while( z_i < z_step ) {
 			int status = gsl_odeiv_evolve_apply ( e, c, s, &sys, &z_i, z_step, &h, y );

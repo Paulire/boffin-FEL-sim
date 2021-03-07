@@ -9,9 +9,6 @@
 
 #include "init.h"
 
-
-#define VALUE( n ) fel_data_matrix[n][i]*delta_theta/2
-
 void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
 {
         // For random number gen
@@ -130,4 +127,3 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 gsl_rng_free (r);
 }
 
-#undef VALUE

@@ -40,7 +40,6 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
                 read_from_config( fel_input_flags->in_file, fel_input_data);
 
         // Alocates memeory for integration data
-
         int ELECTRON_NUM = fel_input_data->N_theta*fel_input_data->N_p;
         double *restrict fel_z_input = ( double * ) malloc( fel_input_data->z_num * sizeof( double ));
         double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
