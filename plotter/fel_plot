@@ -17,9 +17,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 try:
-    data = np.genfromtxt( sys.argv[1], delimiter=',')
+    data = np.genfromtxt( sys.argv[1], delimiter=',')[ :, :-2 ]
 except:
-    print("\nE: Can't load file '" + sys.argv[1] + "'");
+    print(" E: Can't load file '" + sys.argv[1] + "'");
     exit(0)
 
 z = data[0,:]
