@@ -1,12 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-
-#include <gsl/gsl_odeiv.h>
-#include <gsl/gsl_math.h>
-#include <gsl/gsl_matrix.h>
-
-#include "fel_intergrator.h"
-
 /*
  * For arrays corisponding to input data:
  *	array[0] is a
@@ -17,24 +8,40 @@
  *  	...
 */
 
-// Integration functions
+#include <stdio.h>
+#include <math.h>
+
+#include <gsl/gsl_odeiv.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_sf_bessel.h>
+
+#include "fel_intergrator.h"
+
 #define P_I_VAL  2+i+ELEC_NUM
 #define T_I_VAL  2+i
+#define P_I_VAL_HAR  2*HARM+i+ELEC_NUM
+#define T_I_VAL_HAR  2*HARM+i
+
+struct ode_function_input {
+        int ELECTRON_NUM;
+        int HARM_NUM;
+};
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-static inline int fel_ode( double x, const double y[], double f[], register void *params )
+static inline int fel_ode_first_harmonic( double x, const double y[], double f[], register void *params )
 {
 	int ELEC_NUM = *( int*)params;
 	register double out[2] = {0,0};
 
 	// Sets the integral for each p and theta value
 	for( int i=0; i<ELEC_NUM; i++ ) {
-                double tmp = y[ T_I_VAL ] + y[1];                       // Shaves ~25% run time with line bellow :D
-                double cos_t = cos( tmp );
+                double phase_angle = y[ T_I_VAL ] + y[1];                       
+                double cos_t = cos( phase_angle );
 		f[ T_I_VAL ] = y[ P_I_VAL ];				// dthetadz = p
 		f[ P_I_VAL ] = -2*y[ 0 ]* cos_t;		        // dpdz = -2a*cos( theta + phi )
 		out[0] += ( double ) cos_t;
-		out[1] += ( double ) sin( tmp );
+		out[1] += ( double ) sin( phase_angle );
 	}
 
 	out[0] /= ( double ) ELEC_NUM;
@@ -46,59 +53,69 @@ static inline int fel_ode( double x, const double y[], double f[], register void
 	return GSL_SUCCESS;
 }
 
-// Jacobian for fuctions in fel_ode()
-/*static inline int fel_jac( double x, const double y[], double *dfdy, double dfdt[], void *params)
+static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], void *params )
 {
-	register int ELEC_NUM = *(int *)params;
-	double cos_sin[2] = {0,0};
-	printf("2\n");
+	struct ode_function_input *restrict input = params ;
+        int ELEC_NUM = input->ELECTRON_NUM;
+        int HARM = input->HARM_NUM;
+        double a_bar = 5.3;
+        double squiggle = pow( a_bar, 2 )/( 2*( 1+pow( a_bar, 2 ) ) );
+	double out[2*HARM]; //  = { 0,0,0,0,0,0,0,0,0 };   
 
-	sum_inter( cos_sin, y, ELEC_NUM );
+	// Sets the integral for each p and theta value
+        for( int h=0; h<HARM; h++ ) {
+                double J_n = (h+1)*gsl_sf_bessel_Jn( h+1, squiggle ) - (h+1)*gsl_sf_bessel_Jn( h+1, squiggle );
+                for( int i=0; i<ELEC_NUM; i++ ) {
+                        double phase_angle =  ((double)h*2+1)*y[ T_I_VAL_HAR ] + y[HARM*2];
+                        double cos_t = cos( phase_angle );
+                        f[ T_I_VAL_HAR ] = y[ P_I_VAL ];				// dthetadz = p
+                        f[ P_I_VAL_HAR ] += -2*y[ h ]*J_n*cos_t;		        // dpdz = -2a*cos( theta + phi )
+                        out[h] += ( double ) cos_t;
+                        out[h+HARM] += ( double ) sin( phase_angle );
+                }
+                out[h] *= J_n;
 
-	gsl_matrix_view dfdy_mat = gsl_matrix_view_array (dfdy, ELEC_NUM*2+2, 4);
-	gsl_matrix * m = &dfdy_mat.matrix;
-	gsl_matrix_set( m, 0, 0, 0 );
-	gsl_matrix_set( m, 0, 1, -cos_sin[1] );
-	gsl_matrix_set( m, 0, 2, -cos_sin[1] );
-	gsl_matrix_set( m, 0, 3, 0 );
-	gsl_matrix_set( m, 1, 0, 1/( y[0]*y[0] )*cos_sin[1] );
-	gsl_matrix_set( m, 1, 1, -1/( y[0] )*cos_sin[0] );
-	gsl_matrix_set( m, 1, 2, -1/( y[0] )*cos_sin[0] );
-	gsl_matrix_set( m, 1, 3, 0 );
-	for( int i=0; i<ELEC_NUM; i++ ) {
-		gsl_matrix_set( m, 2+i, 0, 0 );
-		gsl_matrix_set( m, 2+i, 1, 0 );
-		gsl_matrix_set( m, 2+i, 2, 0 );
-		gsl_matrix_set( m, 2+i, 3, 1 );
-		gsl_matrix_set( m, 2+ELEC_NUM+i, 0, -2*cos( y[2+i] + y[1] ) );
-		gsl_matrix_set( m, 2+ELEC_NUM+i, 1, 2*y[0]*sin( y[2+i] + y[1] ) );
-		gsl_matrix_set( m, 2+ELEC_NUM+i, 2, 2*y[0]*sin( y[2+i] + y[1] ) );
-		gsl_matrix_set( m, 2+ELEC_NUM+i, 3, 0 );
+                out[h] /= ( double ) ELEC_NUM;
+                out[h+HARM] /= ( double ) ELEC_NUM;
 
-		dfdt[ i + 2 ] = 0;
-		dfdt[ i + 2 + ELEC_NUM ] = 0;
-	}
-	
-	dfdt[ 0 ] = 0;
-	dfdt[ 1 ] = 0;
-
-	return GSL_SUCCESS;
-}*/
-
-void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int Z_NUM )
-{
-	const gsl_odeiv_step_type * T = gsl_odeiv_step_gear2;
-	gsl_odeiv_step * s = gsl_odeiv_step_alloc( T, 2+2*ELECTRON_NUM );
-	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
-	gsl_odeiv_evolve * e = gsl_odeiv_evolve_alloc( 2+2*ELECTRON_NUM );
-
-	gsl_odeiv_system sys = { fel_ode, NULL, 2+2*ELECTRON_NUM, &ELECTRON_NUM };
-	
-	double *restrict y = (double*) malloc( (2*ELECTRON_NUM+2)*sizeof(double));
-        for( int e=0; e< ( 2*ELECTRON_NUM+2 ); e++ ) {
-                y[e] = fel_data_matrix[e][0]; 
+                f[h] = ( double ) out[h];
+                f[h+HARM] = ( double ) -out[h+HARM]/y[h];
         }
 
+	return GSL_SUCCESS;
+}
+void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int Z_NUM, int max_harmonic )
+{
+        gsl_odeiv_system sys;
+	const gsl_odeiv_step_type * T = gsl_odeiv_step_gear2;
+	gsl_odeiv_step * s;
+	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
+	gsl_odeiv_evolve * e;
+        struct ode_function_input params = { ELECTRON_NUM, max_harmonic };
+
+        if( max_harmonic ==  1 ) {
+	        sys.function = fel_ode_first_harmonic;
+                sys.jacobian = NULL;
+                sys.dimension = 2+2*ELECTRON_NUM;
+                sys.params = &ELECTRON_NUM;
+
+                s = gsl_odeiv_step_alloc( T, 2+2*ELECTRON_NUM );
+                e = gsl_odeiv_evolve_alloc( 2+2*ELECTRON_NUM );
+
+        } else {
+	        sys.function = fel_ode_hth_harmonic;
+                sys.jacobian = NULL;
+                sys.dimension = 2*max_harmonic+2*ELECTRON_NUM;
+                sys.params = &params;
+
+                s = gsl_odeiv_step_alloc( T, 2*max_harmonic+2*ELECTRON_NUM );
+                e = gsl_odeiv_evolve_alloc( 2*max_harmonic+2*ELECTRON_NUM );
+        }
+
+	double *restrict y = (double*) calloc( (2*ELECTRON_NUM+2*max_harmonic ), sizeof(double));
+        for( int e=0; e< 2*ELECTRON_NUM+2*max_harmonic; e++ ) 
+                y[e] = fel_data_matrix[e][0]; 
+        
 	// Repeats for each z value, only these are recorded
 	for( int i=0; i<Z_NUM-1; i++ ) {
 		double z_i = z_data[ i ], z_step = z_data[ i+1 ];
@@ -108,9 +125,10 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 			int status = gsl_odeiv_evolve_apply ( e, c, s, &sys, &z_i, z_step, &h, y );
 
 			if( status != GSL_SUCCESS ) { break; }
+                        printf("%lf\n", z_i);
 		}
 
-		for( int e=0; e<( 2*ELECTRON_NUM+2 ); e++ ) {
+		for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ ) {
 			fel_data_matrix[e][ i+1 ] = y[e];
 		}
 	}
@@ -118,4 +136,5 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	free(y);
 	gsl_odeiv_step_free( s );
 	gsl_odeiv_control_free( c );
+        exit(0);
 }

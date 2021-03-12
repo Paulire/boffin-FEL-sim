@@ -17,8 +17,10 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_in->z_0;
-	fel_data_matrix[0][0] = fel_in->a_0;
-	fel_data_matrix[1][0] = fel_in->phi_0;
+        for( int i=0; i<fel_in->odd_harmonic_num; i++ ) {
+                fel_data_matrix[ i ][0] = fel_in->a_0;
+                fel_data_matrix[ i+fel_in->odd_harmonic_num ][0] = fel_in->phi_0;
+        }
 
 	// Sets z data like a linspace
 	for( int i=0; i<fel_in->z_num; i++) {
@@ -75,8 +77,8 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
         for( i=0, e=0; i*fel_in->N_p<ELECTRON_NUM; e++ ) {
 
                 int index = i*(fel_in->N_p)+e;
-                int t_indx = 2+index;
-                int p_indx = 2+ELECTRON_NUM+index;
+                int t_indx = 2*fel_in->odd_harmonic_num + index;
+                int p_indx = 2*fel_in->odd_harmonic_num + ELECTRON_NUM+index;
 
                 if( user_in->shot_noise_theta == true ) { 
                         if( e == 0 )

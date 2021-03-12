@@ -41,13 +41,13 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
 
         // Alocates memeory for integration data
         int ELECTRON_NUM = fel_input_data->N_theta*fel_input_data->N_p;
-        double *restrict fel_z_input = ( double * ) malloc( fel_input_data->z_num * sizeof( double ));
-        double **restrict fel_data_matrix  = ( double **) malloc( ( 2+2*ELECTRON_NUM ) * sizeof( double * )); // For a, phi, theta and p
+        double *restrict fel_z_input = ( double * ) calloc( fel_input_data->z_num , sizeof( double ));
+        double **restrict fel_data_matrix  = ( double **) calloc( ( 2*fel_input_data->odd_harmonic_num + 2*ELECTRON_NUM ) , sizeof( double * )); // For a, phi, theta and p
         if( fel_z_input == NULL || fel_data_matrix == NULL )
                 __error__("Could not allocate memory for ouput data.");
 
-        for( int i=0; i<2*ELECTRON_NUM+2; i++) {
-                fel_data_matrix[i] = ( double *) malloc( fel_input_data->z_num * sizeof( double ) ); // Again for each z data
+        for( int i=0; i<2*ELECTRON_NUM+2*fel_input_data->odd_harmonic_num; i++) {
+                fel_data_matrix[i] = ( double *) calloc( fel_input_data->z_num , sizeof( double ) ); // Again for each z data
                 if( fel_data_matrix[i] == NULL )
                         __error__("Could not allocate memory for ouput data.");
         }
@@ -56,10 +56,10 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         set_fel_input_data( fel_input_data, fel_input_flags, fel_z_input, fel_data_matrix, ELECTRON_NUM );
 
         // Integrator
-        boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data->z_num );
+        boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data->z_num, fel_input_data->odd_harmonic_num );
         
         // Bunching Paramiter calc
-        double *restrict bunching_para = ( double * ) malloc( fel_input_data->z_num*sizeof( double ));
+        double *restrict bunching_para = ( double * ) calloc( fel_input_data->z_num, sizeof( double ));
         if( bunching_para == NULL )
                 __warn__(" W: Could not allocate memory for ouput data in bunching parameter, file output will be zero. ");
         else
