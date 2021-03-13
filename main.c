@@ -66,7 +66,7 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
                 bunching_parameter( fel_input_data, fel_data_matrix, bunching_para, ELECTRON_NUM );
 
         // Write ansers to file
-        write_to_csv( fel_input_flags->out_file, fel_z_input, fel_data_matrix, bunching_para, ELECTRON_NUM, fel_input_data->z_num);
+        write_to_csv( fel_input_data->odd_harmonic_num, fel_input_flags->out_file, fel_z_input, fel_data_matrix, bunching_para, ELECTRON_NUM, fel_input_data->z_num);
 
         // Return memory for input data
         for( int i=0; i<2*ELECTRON_NUM+2; i++ )

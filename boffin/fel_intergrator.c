@@ -18,20 +18,24 @@
 
 #include "fel_intergrator.h"
 
-#define P_I_VAL  2+i+ELEC_NUM
-#define T_I_VAL  2+i
-#define P_I_VAL_HAR  2*HARM+i+ELEC_NUM
-#define T_I_VAL_HAR  2*HARM+i
+#define P_I_VAL         2+i+ELEC_NUM
+#define T_I_VAL         2+i
+#define P_I_VAL_HAR     2*HARM+i+ELEC_NUM  
+#define T_I_VAL_HAR     2*HARM+i  
+#define ELEC_NUM        input->ELECTRON_NUM
+#define HARM            input->HARM_NUM 
+#define J_N( a )        input->bessel_harmonic[ a ]
 
 struct ode_function_input {
         int ELECTRON_NUM;
         int HARM_NUM;
+        double bessel_harmonic[ 100 ];
 };
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 static inline int fel_ode_first_harmonic( double x, const double y[], double f[], register void *params )
 {
-	int ELEC_NUM = *( int*)params;
+	struct ode_function_input *restrict input = params ;
 	register double out[2] = {0,0};
 
 	// Sets the integral for each p and theta value
@@ -46,75 +50,76 @@ static inline int fel_ode_first_harmonic( double x, const double y[], double f[]
 
 	out[0] /= ( double ) ELEC_NUM;
 	out[1] /= ( double ) ELEC_NUM;
-	
+
 	f[0] = (double)out[0];
 	f[1] = (double)-out[1]/y[0];
 
 	return GSL_SUCCESS;
 }
 
-static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], void *params )
+static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], void *restrict params )
 {
 	struct ode_function_input *restrict input = params ;
-        int ELEC_NUM = input->ELECTRON_NUM;
-        int HARM = input->HARM_NUM;
-        double a_bar = 5.3;
-        double squiggle = pow( a_bar, 2 )/( 2*( 1+pow( a_bar, 2 ) ) );
 	double out[2*HARM]; //  = { 0,0,0,0,0,0,0,0,0 };   
 
+        
 	// Sets the integral for each p and theta value
         for( int h=0; h<HARM; h++ ) {
-                double J_n = (h+1)*gsl_sf_bessel_Jn( h+1, squiggle ) - (h+1)*gsl_sf_bessel_Jn( h+1, squiggle );
                 for( int i=0; i<ELEC_NUM; i++ ) {
-                        double phase_angle =  ((double)h*2+1)*y[ T_I_VAL_HAR ] + y[HARM*2];
+                        f[ P_I_VAL_HAR ] = 0;
+                        double phase_angle =  ((double) 2*h+1)*y[ T_I_VAL_HAR ] + y[HARM + h];
                         double cos_t = cos( phase_angle );
-                        f[ T_I_VAL_HAR ] = y[ P_I_VAL ];				// dthetadz = p
-                        f[ P_I_VAL_HAR ] += -2*y[ h ]*J_n*cos_t;		        // dpdz = -2a*cos( theta + phi )
+                        f[ P_I_VAL_HAR ] += 2*y[ h ]*J_N( h )*cos_t;		        // dpdz = -2a*cos( theta + phi )
                         out[h] += ( double ) cos_t;
                         out[h+HARM] += ( double ) sin( phase_angle );
                 }
-                out[h] *= J_n;
 
                 out[h] /= ( double ) ELEC_NUM;
+                out[h] *= ( double ) J_N(h);
                 out[h+HARM] /= ( double ) ELEC_NUM;
 
                 f[h] = ( double ) out[h];
                 f[h+HARM] = ( double ) -out[h+HARM]/y[h];
         }
 
+        for( int i=0; i<ELEC_NUM; i++ ) {
+                f[ T_I_VAL_HAR ] = y[ P_I_VAL ];
+                f[ P_I_VAL_HAR ] *= -1;
+        }
+
 	return GSL_SUCCESS;
 }
+
 void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, int ELECTRON_NUM, int Z_NUM, int max_harmonic )
 {
         gsl_odeiv_system sys;
 	const gsl_odeiv_step_type * T = gsl_odeiv_step_gear2;
 	gsl_odeiv_step * s;
-	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
 	gsl_odeiv_evolve * e;
-        struct ode_function_input params = { ELECTRON_NUM, max_harmonic };
+	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
 
-        if( max_harmonic ==  1 ) {
-	        sys.function = fel_ode_first_harmonic;
-                sys.jacobian = NULL;
-                sys.dimension = 2+2*ELECTRON_NUM;
-                sys.params = &ELECTRON_NUM;
+        double a_bar = 0.5;
+        double squiggle = pow( a_bar, 2 )/( 2*( 1+pow( a_bar, 2 ) ) );
+        struct ode_function_input params;
 
-                s = gsl_odeiv_step_alloc( T, 2+2*ELECTRON_NUM );
-                e = gsl_odeiv_evolve_alloc( 2+2*ELECTRON_NUM );
+        params.ELECTRON_NUM = ELECTRON_NUM;
+        params.HARM_NUM = max_harmonic;
 
-        } else {
-	        sys.function = fel_ode_hth_harmonic;
-                sys.jacobian = NULL;
-                sys.dimension = 2*max_harmonic+2*ELECTRON_NUM;
-                sys.params = &params;
+        for( int i=0; i<max_harmonic; i++ ) 
+               params.bessel_harmonic[i] = gsl_sf_bessel_Jn( i, squiggle ) - gsl_sf_bessel_Jn( i+1, squiggle );
 
-                s = gsl_odeiv_step_alloc( T, 2*max_harmonic+2*ELECTRON_NUM );
-                e = gsl_odeiv_evolve_alloc( 2*max_harmonic+2*ELECTRON_NUM );
-        }
+        sys.function = fel_ode_hth_harmonic;
+        sys.jacobian = NULL;
+        sys.dimension = 2*max_harmonic+2*ELECTRON_NUM;
+        sys.params = &params;
+
+        s = gsl_odeiv_step_alloc( T, 2*max_harmonic+2*ELECTRON_NUM );
+        e = gsl_odeiv_evolve_alloc( 2*max_harmonic+2*ELECTRON_NUM );
 
 	double *restrict y = (double*) calloc( (2*ELECTRON_NUM+2*max_harmonic ), sizeof(double));
-        for( int e=0; e< 2*ELECTRON_NUM+2*max_harmonic; e++ ) 
+        for( int e=0; e< 2*ELECTRON_NUM+2*max_harmonic; e++ ) {
                 y[e] = fel_data_matrix[e][0]; 
+        }
         
 	// Repeats for each z value, only these are recorded
 	for( int i=0; i<Z_NUM-1; i++ ) {
@@ -125,7 +130,6 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 			int status = gsl_odeiv_evolve_apply ( e, c, s, &sys, &z_i, z_step, &h, y );
 
 			if( status != GSL_SUCCESS ) { break; }
-                        printf("%lf\n", z_i);
 		}
 
 		for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ ) {
@@ -136,5 +140,4 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	free(y);
 	gsl_odeiv_step_free( s );
 	gsl_odeiv_control_free( c );
-        exit(0);
 }
