@@ -21,6 +21,8 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 fel_data_matrix[ i ][0] = fel_in->a_0;
                 fel_data_matrix[ i+fel_in->odd_harmonic_num ][0] = fel_in->phi_0;
         }
+        fel_data_matrix[ 0][0] = 1e-4;
+        fel_data_matrix[ 1][0] = 1e-6;
 
 	// Sets z data like a linspace
 	for( int i=0; i<fel_in->z_num; i++) {
