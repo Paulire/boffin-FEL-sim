@@ -117,12 +117,11 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 
 		for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ ) {
 			fel_data_matrix[e][ i+1 ] = y[e];
-                        printf( "%lf\n", y[e] );
 		}
 
-                /*if( i == 0 ) {
+                if( i%200 == 0 ) {
                         phase_shift( y, &params );
-	        }*/
+	        }
 
         }
 
