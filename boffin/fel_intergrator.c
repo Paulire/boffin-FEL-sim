@@ -26,6 +26,8 @@ static inline int fel_ode( double x, const double y[], double f[], register void
 {
 	int ELEC_NUM = *( int*)params;
 	register double out[2] = {0,0};
+        out[0] = 0;
+        out[1] = 0;
 
 	// Sets the integral for each p and theta value
 	for( int i=0; i<ELEC_NUM; i++ ) {
