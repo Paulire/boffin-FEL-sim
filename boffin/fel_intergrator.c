@@ -69,9 +69,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
 
 static inline void phase_shift( double *restrict y, struct ode_function_input *restrict input ) {
         for( int i=0; i<ELEC_NUM; i++ ) {
-                printf("%lf\t", y[ T_I_VAL_HAR ]);
-                y[ T_I_VAL_HAR ] += 3*M_PI/2;
-                printf("%lf\n", y[ T_I_VAL_HAR ]);
+                y[ T_I_VAL_HAR ] += 3*M_PI/3;
         }
 }
 
