@@ -95,7 +95,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         double N_j = mean_elec_const*exp(
                                                     -pow( p_point, 2 )/( 2*
                                                      pow( fel_in->sigma, 2 ) ) )*(
-                                                          delta_theta)*(delta_p);
+                                                          delta_theta)*(delta_p)/fel_in->pulse_duration;
 
                         const_buff = delta_theta/( 2*sqrt( N_j ) );
                         U_theta = gsl_rng_uniform( r )*2*const_buff - const_buff;

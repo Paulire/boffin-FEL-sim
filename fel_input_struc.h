@@ -16,6 +16,7 @@ typedef struct intergrator_input {
         unsigned long int shot_noise_seed;
         double mean_elec;
         int odd_harmonic_num;
+        double pulse_duration;
 } fel_input_values;
 
 #endif

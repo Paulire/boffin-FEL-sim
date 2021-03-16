@@ -30,8 +30,8 @@ for i in range(2, len(sys.argv)):
         a = data[2,:]
         plt.plot(z,a,'-b')
         plt.yscale('log')
-        plt.xlabel("$z\u0305$", size='x-large')
-        plt.ylabel("$\u0251$", size='x-large')
+        plt.xlabel("$z\u0305$", size='xx-large')
+        plt.ylabel("$\u0251$", size='xx-large')
         plt.grid(which='both')
         plt.show()
 
@@ -39,8 +39,8 @@ for i in range(2, len(sys.argv)):
     elif sys.argv[i] == "-phi":
         phi = data[3,:]
         plt.plot(z,phi,'-b')
-        plt.xlabel("$z\u0305$", size='x-large')
-        plt.ylabel("$\u03C6$", size='x-large')
+        plt.xlabel("$z\u0305$", size='xx-large')
+        plt.ylabel("$\u03C6$", size='xx-large')
         plt.grid(which='both')
         plt.show()
 
@@ -66,8 +66,8 @@ for i in range(2, len(sys.argv)):
         if np.abs( float(plt.axis()[3])) < 0.5 or np.abs( float(plt.axis()[2])) < 0.5 :
             plt.ylim( -0.5,0.5)
         plt.xlim(0, 2*np.pi )
-        plt.xlabel("$\u03B8$", size='x-large')
-        plt.ylabel("$p$", size='x-large')
+        plt.xlabel("$\u03B8$", size='xx-large')
+        plt.ylabel("$p$", size='xx-large')
         plt.grid(which='both')
         plt.show()
 
