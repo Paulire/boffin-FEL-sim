@@ -105,6 +105,15 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         theta_value = theta_point + U_theta;
                         p_value = p_point + U_p;
 
+                        /*printf("%lf\n", N_j);
+                        printf("%.50lf\n", mean_elec_const);
+                        printf("%lf\n", p_point);
+                        printf("%lf\n", fel_in->sigma);
+                        printf("%lf\n", delta_theta);
+                        printf("%lf\n", delta_p);
+                        printf("%0.50lf\n", fel_in->pulse_duration);
+                        exit(0);*/
+
                 } else {
                         if( e == 0 )
                                 theta_value = i*2*M_PI/fel_in->N_theta;
