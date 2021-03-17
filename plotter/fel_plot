@@ -7,27 +7,43 @@ File
     Line 3: a
     Line 4+: theta
     Line e+: p
+
+Argv
+    0: command
+    1: file
+    2: which harmonic
+    3+ which plot
 """
 import sys
 
-if len(sys.argv) <= 2:
+if len(sys.argv) <= 3:
 	exit(2)
+
+
+# Harmonics set as h=1,2,3,... but real harmonic is h_r=h+(h-1)/2=1,3,5,...
+harmonic_to_plot = int( sys.argv[2] )
 
 import numpy as np
 from matplotlib import pyplot as plt
 
+
+# Open file and error if that does not work
 try:
-    data = np.genfromtxt( sys.argv[1], delimiter=',')[ :, :-2 ]
+    fp = open( sys.argv[1], 'r' )
+    harmonics_num = int( fp.readline() )
+    fp.close() 
+    data = np.genfromtxt( sys.argv[1], delimiter=',', skip_header=1 )[ :, :-2 ]
 except:
     print(" E: Can't load file '" + sys.argv[1] + "'");
     exit(0)
 
 z = data[0,:]
 
+# For each argument, set the relevent plot
 for i in range(2, len(sys.argv)):
     # Plot a
     if sys.argv[i] == "-a":
-        a = data[2,:]
+        a = data[ int( harmonics_num + harmonic_to_plot) ,:]
         plt.plot(z,a,'-b')
         plt.yscale('log')
         plt.xlabel("$z\u0305$", size='xx-large')
@@ -37,7 +53,7 @@ for i in range(2, len(sys.argv)):
 
     # Plot phi
     elif sys.argv[i] == "-phi":
-        phi = data[3,:]
+        phi = data[ int( 2*harmonics_num + harmonic_to_plot) ,:] 
         plt.plot(z,phi,'-b')
         plt.xlabel("$z\u0305$", size='xx-large')
         plt.ylabel("$\u03C6$", size='xx-large')
@@ -46,20 +62,21 @@ for i in range(2, len(sys.argv)):
 
     # Phot phase space
     elif sys.argv[i] == "-pha":
-        ELE_NUM = int( (len( data[ : , 0 ] ) -4)/2 )
+        ELE_NUM = int( (len( data[ : , 0 ] ) - 3*harmonics_num)/2 )
         position = float(sys.argv[i+1])
         point = int( position*(len(z)-1)/z[-2])
         if( point > len(z)-1 ):
             point = len(z)-1
-        theta = data[ 4:(ELE_NUM+4), point ]
-        p = data[ (ELE_NUM+4):, point ]
-        a = data[ 2, point ]
-        phi = data[ 3, point ]
+        theta = data[ 3*harmonics_num:(ELE_NUM+3*harmonics_num), point ]
+        p = data[ (ELE_NUM + 3*harmonics_num+1):, point ]
+        a = data[ int( harmonics_num + harmonic_to_plot), point ]
+        phi = data[ int( 2*harmonics_num + harmonic_to_plot), point ]
 
         # Seperatrix
+        harmonic = int( harmonic_to_plot + (harmonic_to_plot - 1)/2 )
         data_r = np.linspace(0, 2*np.pi, 1000)
-        plt.plot( data_r, np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
-        plt.plot( data_r, -np.sqrt( ((2*a)**2)*(1 - np.sin( data_r + phi ))  ), '-b')
+        plt.plot( data_r, np.sqrt( ((2*a)**2)*(1 - np.sin( harmonic*data_r + phi ))  ), '-b')
+        plt.plot( data_r, -np.sqrt( ((2*a)**2)*(1 - np.sin( harmonic*data_r + phi ))  ), '-b')
 
         # Main plot
         plt.plot( theta%(2*np.pi), p, '.r' );
@@ -71,8 +88,9 @@ for i in range(2, len(sys.argv)):
         plt.grid(which='both')
         plt.show()
 
+    # Bunching Paramiter plot
     elif sys.argv[i] == "-bp":
-        b_n = data[ 1, : ]
+        b_n = data[ harmonic_to_plot, : ]
 
         plt.plot( z, b_n )
         plt.yscale('log')
