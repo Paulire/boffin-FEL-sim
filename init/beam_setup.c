@@ -18,12 +18,10 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_in->z_0;
         for( int i=0; i<fel_in->odd_harmonic_num; i++ ) {
-                fel_data_matrix[ i ][0] = fel_in->a_0;
+                fel_data_matrix[ i ][0] = fel_in->a_0*pow( 10, -i );
                 fel_data_matrix[ i+fel_in->odd_harmonic_num ][0] = fel_in->phi_0;
         }
-        fel_data_matrix[ 0][0] = 1e-4;
-        fel_data_matrix[ 1][0] = 1e-6;
-
+        
 	// Sets z data like a linspace
 	for( int i=0; i<fel_in->z_num; i++) {
 		z[i] = fel_in->z_0+(i)*( fel_in->z_f - fel_in->z_0 )/(fel_in->z_num-1);
@@ -104,15 +102,6 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 
                         theta_value = theta_point + U_theta;
                         p_value = p_point + U_p;
-
-                        /*printf("%lf\n", N_j);
-                        printf("%.50lf\n", mean_elec_const);
-                        printf("%lf\n", p_point);
-                        printf("%lf\n", fel_in->sigma);
-                        printf("%lf\n", delta_theta);
-                        printf("%lf\n", delta_p);
-                        printf("%0.50lf\n", fel_in->pulse_duration);
-                        exit(0);*/
 
                 } else {
                         if( e == 0 )

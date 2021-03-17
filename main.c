@@ -58,8 +58,10 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         // Integrator
         boffin_solve( fel_z_input, fel_data_matrix, ELECTRON_NUM, fel_input_data->z_num, fel_input_data->odd_harmonic_num );
         
-        // Bunching Paramiter calc
-        double *restrict bunching_para = ( double * ) calloc( fel_input_data->z_num, sizeof( double ));
+        // Bunching Paramiter calc, Alocates memeory for each harmonic in z.
+        double **restrict bunching_para = ( double ** ) calloc( fel_input_data->odd_harmonic_num, sizeof( double * ));
+        for( int i=0; i<fel_input_data->odd_harmonic_num; i++ )
+                bunching_para[i] = ( double * ) calloc( fel_input_data->z_num, sizeof( double ) );
         if( bunching_para == NULL )
                 __warn__(" W: Could not allocate memory for ouput data in bunching parameter, file output will be zero. ");
         else
@@ -71,6 +73,8 @@ static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, 
         // Return memory for input data
         for( int i=0; i<2*ELECTRON_NUM+2; i++ )
                 free( fel_data_matrix[i] );
+        for( int i=0; i<fel_input_data->odd_harmonic_num; i++ ) 
+                free( bunching_para[i] );
         free( fel_data_matrix );
         free( fel_z_input );
         free( bunching_para );

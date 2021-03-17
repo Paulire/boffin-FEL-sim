@@ -69,7 +69,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
 
 static inline void phase_shift( double *restrict y, struct ode_function_input *restrict input ) {
         for( int i=0; i<ELEC_NUM; i++ ) {
-                y[ T_I_VAL_HAR ] += 3*M_PI/2;
+                y[ T_I_VAL_HAR ] += 3*M_PI/3;
         }
 }
 
@@ -117,8 +117,8 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 			fel_data_matrix[e][ i+1 ] = y[e];
 		}
 
-                if( i%200 == 0 ) {
-                        phase_shift( y, &params );
+                if( i%50 == 0 ) {
+                        //phase_shift( y, &params );
 	        }
 
         }
