@@ -117,6 +117,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 				strcat( buff, argv[i] );
 				__error__( buff );
 			}
+                        strcpy( IF->in_file , argv[i]);
 		}
 	}
 
