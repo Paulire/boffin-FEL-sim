@@ -32,15 +32,14 @@ static inline void calc_bunching_parameter( struct intergrator_input *restrict I
         
         // Normilisation factor S
         for( i=0; i<IN->N_p; i++ ) {
-                //s += exp( -0.5*pow( fel_data_matrix[ 2*H+i+ELECTRON_NUM ][ 0 ]/IN->sigma, 2 ) );
                 s += exp( -0.5*pow( fel_data_matrix[ 2*( 1+h )+i+ELECTRON_NUM ][0]/IN->sigma, 2 ) );
+                printf("%lf\n",fel_data_matrix[ 2*( 1+h )+i+ELECTRON_NUM ][0]);
         }
 
         double tmp = 0;
         // 'i' is points in z, 'j' is electrion index
         for( i=0, j=0; i<IN->z_num; j++ ) {
                 // Weighted function g_j for each particle
-                //g_j = exp( -0.5*pow( fel_data_matrix[ 2*H+j+ELECTRON_NUM ][ i ]/IN->sigma, 2 ) )/s;
                 g_j = exp( -0.5*pow( fel_data_matrix[2*(1+h)+j+ELECTRON_NUM][i]/IN->sigma,2 ) )/s;
                 b_n_temp = gsl_complex_add( b_n_temp, gsl_complex_polar( g_j, -fel_data_matrix[2*H+j][i]/( (double) HARMONIC ) ) );
                 tmp += g_j;
