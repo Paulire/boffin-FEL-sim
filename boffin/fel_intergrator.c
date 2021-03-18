@@ -38,7 +38,7 @@ struct ode_function_input {
 static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], void *restrict params )
 {
 	struct ode_function_input *restrict input = params ;
-	double out[2*HARM]; //  = { 0,0,0,0,0,0,0,0,0 };   
+	double out[2*HARM]; 
 
         for( int i=0; i<ELEC_NUM; i++ ) {
                 f[ T_I_VAL_HAR ] = y[ P_I_VAL_HAR ];
@@ -54,7 +54,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
                         double cos_t = ( double ) cos( phase_angle );
                         f[ P_I_VAL_HAR ] -= 2*J_N( h )*y[h]*cos_t;
                         out[ h ] += cos_t;
-                        out[ h+HARM ] += sin( phase_angle );
+                        out[ h+HARM ] += J_N(h)*sin( phase_angle );
                 }
 
                 out[h] /= ( double ) ELEC_NUM;
@@ -80,7 +80,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	gsl_odeiv_step * s;
 	gsl_odeiv_evolve * e;
 	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
-        double a_bar = 4;
+        double a_bar = 4.0;
         double squiggle = pow( a_bar, 2 )/( 2*( 1+pow( a_bar, 2 ) ) );
         struct ode_function_input params;
 
@@ -99,7 +99,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
         e = gsl_odeiv_evolve_alloc( 2*max_harmonic+2*ELECTRON_NUM );
 
 	double *restrict y = (double*) calloc( (2*ELECTRON_NUM+2*max_harmonic ), sizeof(double));
-        for( int e=0; e< 2*ELECTRON_NUM+2*max_harmonic; e++ ) {
+        for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ ) {
                 y[e] = fel_data_matrix[e][0]; 
         }
         
@@ -119,7 +119,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 		}
                 printf("%lf\n", z_i);
 
-                if( i%80 == 0 && i>90 ) {
+                if( i%10 == 0 && i>90 ) {
                         phase_shift( y, &params );
 	        }
         }
