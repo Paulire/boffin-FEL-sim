@@ -73,7 +73,7 @@ for i in range(2, len(sys.argv)):
         phi = data[ int( 2*harmonics_num + harmonic_to_plot), point ]
 
         # Seperatrix
-        harmonic = int( harmonic_to_plot + (harmonic_to_plot - 1)/2 )
+        harmonic = int( 2*( harmonic_to_plot - 0.5 ) )
         data_r = np.linspace(0, 2*np.pi, 1000)
         plt.plot( data_r, np.sqrt( ((2*a)**2)*(1 - np.sin( harmonic*data_r + phi ))  ), '-b')
         plt.plot( data_r, -np.sqrt( ((2*a)**2)*(1 - np.sin( harmonic*data_r + phi ))  ), '-b')
