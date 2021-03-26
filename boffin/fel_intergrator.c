@@ -18,8 +18,6 @@
 
 #include "fel_intergrator.h"
 
-#define P_I_VAL         2+i+ELEC_NUM
-#define T_I_VAL         2+i
 #define P_I_VAL_HAR     2*HARM+i+ELEC_NUM  
 #define T_I_VAL_HAR     2*HARM+i  
 #define ELEC_NUM        input->ELECTRON_NUM
@@ -39,6 +37,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
 {
 	struct ode_function_input *restrict input = params ;
 	double out[2*HARM]; 
+        int i, h;
 
         for( int i=0; i<ELEC_NUM; i++ ) {
                 f[ T_I_VAL_HAR ] = y[ P_I_VAL_HAR ];
@@ -46,10 +45,10 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
         }
 
 	// Sets the integral for each p and theta value
-        for( int h=0; h<HARM; h++ ) {
+        for( h=0; h<HARM; h++ ) {
                 out[ h ] = 0;
                 out[h + input->HARM_NUM] = 0;
-                for( int i=0; i<ELEC_NUM; i++ ) {
+                for( i=0; i<ELEC_NUM; i++ ) {
                         double phase_angle = ( ( double ) 2*( h+0.5 ) )*y[ T_I_VAL_HAR ] + y[ HARM + h ];
                         double cos_t = ( double ) cos( phase_angle );
                         f[ P_I_VAL_HAR ] -= 2*J_N( h )*y[h]*cos_t;
@@ -57,11 +56,8 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
                         out[ h+HARM ] += sin( phase_angle );
                 }
 
-                out[h] /= ( double ) ELEC_NUM;
-                out[h] *= ( double ) J_N(h);
-                out[h+HARM] /= ( double ) ELEC_NUM;
-                f[h] = ( double ) out[h];
-                f[h+HARM] = ( double ) -out[h+HARM]/y[h];
+                f[h] = ( double ) J_N(h)*out[h]/ELEC_NUM;
+                f[h+HARM] = ( double ) -out[h+HARM]/( y[h]*ELEC_NUM );
         }
 
 	return GSL_SUCCESS;
