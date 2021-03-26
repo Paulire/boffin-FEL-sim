@@ -47,7 +47,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
 	// Sets the integral for each p and theta value
         for( h=0; h<HARM; h++ ) {
                 out[ h ] = 0;
-                out[h + input->HARM_NUM] = 0;
+                out[h + HARM ] = 0;
                 for( i=0; i<ELEC_NUM; i++ ) {
                         double phase_angle = ( ( double ) 2*( h+0.5 ) )*y[ T_I_VAL_HAR ] + y[ HARM + h ];
                         double cos_t = ( double ) cos( phase_angle );
