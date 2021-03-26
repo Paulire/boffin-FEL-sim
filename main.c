@@ -32,15 +32,17 @@ int main( int argc, char *argv[])
 	return 0;
 }
 
-static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, fel_input_values *restrict fel_input_data){
+static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, fel_input_values *restrict fel_input_data)
+{
 
+        // Checks wether to load data from command line or from config file
         if( fel_input_flags->cmd_mode == true )
                 read_from_cmd( fel_input_flags->cmd_input, fel_input_data );
         else
                 read_from_config( fel_input_flags->in_file, fel_input_data);
 
         // Alocates memeory for integration data
-        int ELECTRON_NUM = fel_input_data->N_theta*fel_input_data->N_p;
+        int ELECTRON_NUM = fel_input_data->N_theta*fel_input_data->N_p;                                  
         double *restrict fel_z_input = ( double * ) calloc( fel_input_data->z_num , sizeof( double ));
         double **restrict fel_data_matrix  = ( double **) calloc( ( 2*fel_input_data->odd_harmonic_num + 2*ELECTRON_NUM ) , sizeof( double * )); // For a, phi, theta and p
         if( fel_z_input == NULL || fel_data_matrix == NULL )

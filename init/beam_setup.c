@@ -18,7 +18,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_in->z_0;
         for( int i=0; i<fel_in->odd_harmonic_num; i++ ) {
-                fel_data_matrix[ i ][0] = fel_in->a_0*pow( 10, -i*2 );
+                fel_data_matrix[ i ][0] = fel_in->a_0*pow( 10, -i*2+1 );
                 fel_data_matrix[ i+fel_in->odd_harmonic_num ][0] = fel_in->phi_0;
         }
         
@@ -74,7 +74,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 
         }
 
-        for( i=0, e=0; i*fel_in->N_p<ELECTRON_NUM; e++ ) {
+        for( i=0, e=0; i<fel_in->N_theta; e++ ) {
 
                 int index = i*(fel_in->N_p)+e;
                 int t_indx = 2*fel_in->odd_harmonic_num + index;

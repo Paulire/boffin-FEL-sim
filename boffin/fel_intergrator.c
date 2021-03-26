@@ -54,7 +54,7 @@ static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], 
                         double cos_t = ( double ) cos( phase_angle );
                         f[ P_I_VAL_HAR ] -= 2*J_N( h )*y[h]*cos_t;
                         out[ h ] += cos_t;
-                        out[ h+HARM ] += J_N(h)*sin( phase_angle );
+                        out[ h+HARM ] += sin( phase_angle );
                 }
 
                 out[h] /= ( double ) ELEC_NUM;
@@ -80,15 +80,20 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 	gsl_odeiv_step * s;
 	gsl_odeiv_evolve * e;
 	gsl_odeiv_control * c = gsl_odeiv_control_y_new( 1e-8, 1e-8 );
-        double a_bar = 4.0;
+        double a_bar = 4;
         double squiggle = pow( a_bar, 2 )/( 2*( 1+pow( a_bar, 2 ) ) );
         struct ode_function_input params;
 
         params.ELECTRON_NUM = ELECTRON_NUM;
         params.HARM_NUM = max_harmonic;
-        for( int i=0; i<max_harmonic; i++ ) {
-               params.bessel_harmonic[i] = gsl_sf_bessel_Jn( i, squiggle ) - gsl_sf_bessel_Jn( i+1, squiggle );
+
+        if( max_harmonic == 1 )
+                params.bessel_harmonic[0] = 1;
+        else {
+                for( int i=0; i<max_harmonic; i++ ) 
+                       params.bessel_harmonic[i] = gsl_sf_bessel_Jn( i, squiggle ) - gsl_sf_bessel_Jn( i+1, squiggle );
         }
+        
 
         sys.function = fel_ode_hth_harmonic;
         sys.jacobian = NULL;
@@ -117,10 +122,11 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 		for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ ) {
 			fel_data_matrix[e][ i+1 ] = y[e];
 		}
-                printf("%lf\n", z_i);
+                //printf("%lf\n", z_i);
 
-                if( i%10 == 0 && i>90 ) {
-                        phase_shift( y, &params );
+                if( i%10 == 0 && i >= 100 ) {
+                        //phase_shift( y, &params );
+                        //boffin -CMDMODE " N_theta=1000; phi_0=0; a_0=0.000001; z_f=50; z_0=0; z_num = 1000; N_p=1; m = 0; sigma=0.5; shot_n_coff=0.005; mean_electron=100000; pulse_duration=1;" -o output.csv -h 2
 	        }
         }
 

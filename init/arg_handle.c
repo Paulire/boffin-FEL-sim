@@ -35,6 +35,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
         IF->shot_noise_theta = false;
         IF->plot_harmonic = 1;
         INT_IN->odd_harmonic_num = 1;
+        IF->use_phase_shift = false;
 
 	for( int i=1; i<argc; i++)
 	{
@@ -109,6 +110,10 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
                         if( i == argc-1 )
                                 __error__( "No command line input for -h" );
                         IF->plot_harmonic = atoi( argv[ i+1 ] );
+                        i++;
+
+                } else if( strcmp("-phaseshift", argv[i]) == 0 ) {
+                        IF->use_phase_shift = true;
                         i++;
 
                 } else {

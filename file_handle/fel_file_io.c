@@ -218,7 +218,12 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->mean_elec = atoi(buff_num);
 	} else if( strcmp( (char*)buff_arg, "pulse_duration") == 0 ) {
 		fel_val->pulse_duration = atof(buff_num);
-	} else {
+	} else if( strcmp( (char*)buff_arg, "phaseshift_interval") == 0 ) {
+		fel_val->phase_shift_intervals = atof(buff_num);
+	} else if( strcmp( (char*)buff_arg, "phaseshift_start") == 0 ) {
+		fel_val->phase_shift_start = atof(buff_num);
+	} else if( strcmp( (char*)buff_arg, "phaseshift_start") == 0 ) {
+		fel_val->phase_shift_k_value = atoi(buff_num);
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}
 }
