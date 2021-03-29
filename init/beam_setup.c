@@ -104,8 +104,9 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         p_value = p_point + U_p;
 
                 } else {
-                        if( e == 0 )
+                        if( e == 0 ) {
                                 theta_value = i*2*M_PI/fel_in->N_theta;
+                        }
 
                         if( fel_in->N_p == 1 )
                                 p_value = (double) 0;
