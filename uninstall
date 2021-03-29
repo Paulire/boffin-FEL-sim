@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+rm -fr /usr/local/lib/boffin
+rm  /usr/local/bin/boffin
+rm  /usr/local/bin/fel_plot
+
+echo Done
