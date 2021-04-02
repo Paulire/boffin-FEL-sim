@@ -110,16 +110,16 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, i
 
         s = gsl_odeiv_step_alloc( T, 2*max_harmonic+2*ELECTRON_NUM );
         e = gsl_odeiv_evolve_alloc( 2*max_harmonic+2*ELECTRON_NUM );
+        double h = 1e-6;
 
 	double *restrict y = (double*) calloc( (2*ELECTRON_NUM+2*max_harmonic ), sizeof(double));
-        for( int e=0; e<2*ELECTRON_NUM+2*max_harmonic; e++ )
-                y[e] = fel_data_matrix[e][0]; 
+        for( int i=0; i<2*ELECTRON_NUM+2*max_harmonic; i++ )
+                y[i] = fel_data_matrix[i][0]; 
         
         
 	// Repeats for each z value, only these are recorded
 	for( int i=0; i<Z_NUM-1; i++ ) {
 		double z_i = z_data[ i ], z_step = z_data[ i+1 ];
-		double h = 1e-6;
 
                 // Intergrates until next recoded step is reached
 		while( z_i < z_step ) {
