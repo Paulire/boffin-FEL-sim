@@ -40,7 +40,7 @@ NOTE: this has only be tested on a Debian distrobution, edit the ''install'' fil
  * ```N_p```      The number of points between +/-m\*sigma.
  * ```sigma```    Energy spread veriance
  * ```off_p```    Mean energy offset
- * ```a_0```      Inital a value
+ * ```a_0```      Inital a value for the first harmonic, all subsequent odd harmonics are assumed to be two orders of magnitude lower.
  * ```z_0```      Inital z value
  * ```z_f```      Final z value
  * ```z_num```    Number of points between z_0 and z_f

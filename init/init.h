@@ -25,6 +25,7 @@ typedef struct input_flag {
                 bool shot_noise_theta;
                 bool shot_noise_both;
                 int plot_harmonic;
+                bool use_phase_shift;
 } input_flags;
 
 // Controls input arguments and adjusts relevent input flags

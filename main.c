@@ -36,8 +36,7 @@ int main( int argc, char *argv[])
 }
 
 static inline void build_and_run_boffin( input_flags *restrict fel_input_flags, fel_input_values *restrict fel_input_data,boffin_input_data *restrict boffin_input){
-
-        // Read input file or cmd input 
+        // Checks wether to load data from command line or from config file
         if( fel_input_flags->cmd_mode == true )
                 read_from_cmd( fel_input_flags->cmd_input, fel_input_data, boffin_input );
         else
