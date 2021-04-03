@@ -8,11 +8,11 @@
 #include "init.h"
 #include "../error/error.h"
 #include "../fel_input_struc.h"
-
+#include "../boffin/fel_intergrator.h"
 
 static inline void info_help( bool  );
 
-void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *IF )
+void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *IF, boffin_input_data *BF )
 {
 
 	// If no input then error
@@ -34,7 +34,8 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
         IF->shot_noise_both = false;
         IF->shot_noise_theta = false;
         IF->plot_harmonic = 1;
-        INT_IN->odd_harmonic_num = 1;
+        BF->max_harmonics = 1;
+        BF->pondermotive_shift_on = false;
 
 	for( int i=1; i<argc; i++)
 	{
@@ -102,7 +103,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
                 } else if( strcmp("-h", argv[i]) == 0 ){
 			if( i == argc-1)
 				__error__( "No command line input for -h" );
-                        INT_IN->odd_harmonic_num = atoi( argv[ i+1 ] );
+                        BF->max_harmonics = atoi( argv[ i+1 ] );
                         i++;
 
                 } else if( strcmp("-hp", argv[i]) == 0 ) {
@@ -110,6 +111,9 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
                                 __error__( "No command line input for -h" );
                         IF->plot_harmonic = atoi( argv[ i+1 ] );
                         i++;
+
+                } else if( strcmp("-shift", argv[i]) == 0 ) {
+                        BF->pondermotive_shift_on = true;
 
                 } else {
 			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {

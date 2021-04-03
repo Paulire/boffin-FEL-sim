@@ -12,9 +12,9 @@
 char buff_arg[100] = { '\0' };	// buffers for the command and the name
 char buff_num[100] = { '\0' };
 
-void set_data( struct intergrator_input *, int line );
+void set_data( struct intergrator_input *, int line, boffin_input_data * );
 
-void read_from_config( char *name, struct intergrator_input *fel_val )
+void read_from_config( char *restrict name, struct intergrator_input *restrict fel_val, boffin_input_data *restrict boffin_input )
 {
         // Some values need to have conditions regardless of if the user has set it
         fel_val->shot_n_val = 0.01;
@@ -74,7 +74,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
                                 is_arg = 1;
                                 i = -1;
 
-                                set_data( fel_val, line_no );
+                                set_data( fel_val, line_no, boffin_input );
 
                                 memset(&buff_arg[0], '\0', sizeof(buff_arg));
                                 memset(&buff_num[0], '\0', sizeof(buff_num));
@@ -93,7 +93,7 @@ void read_from_config( char *name, struct intergrator_input *fel_val )
 }
 
 // If the comand line contains the input data the this shall be read instead
-void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
+void read_from_cmd( char cmd_input[1000], struct intergrator_input *restrict fel_val, boffin_input_data *restrict boffin_input )
 {
         // Some values need to have conditions regardless of if the user has set it
         fel_val->shot_n_val = 0.01;
@@ -123,7 +123,7 @@ void read_from_cmd( char cmd_input[1000], struct intergrator_input *fel_val)
 			is_arg = 1;
 			count_char = 0;
  			
-			set_data( fel_val, 1 );
+			set_data( fel_val, 1, boffin_input );
 			
 			memset(&buff_arg[0], '\0', sizeof(buff_arg));
 			memset(&buff_num[0], '\0', sizeof(buff_num));
@@ -190,7 +190,7 @@ void write_to_csv( int harmonic_num, char *name, double *restrict z_val, double 
 
 
 // Checks looks up command then applies value to relevent var
-void set_data( struct intergrator_input *fel_val, int line) 
+void set_data( struct intergrator_input *restrict fel_val, int line, boffin_input_data *restrict boffin_input ) 
 {
 	if( strcmp( (char*)buff_arg, "N_theta") == 0 ) {
 		fel_val->N_theta = atoi(buff_num);
@@ -209,7 +209,7 @@ void set_data( struct intergrator_input *fel_val, int line)
 	} else if( strcmp( (char*)buff_arg, "phi_0") == 0 ) {
 		fel_val->phi_0 = atof(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "z_num") == 0 ) {
-		fel_val->z_num = atoi(buff_num); 
+		boffin_input->Z_NUM = atoi(buff_num); 
 	} else if( strcmp( (char*)buff_arg, "m") == 0 ) {
 		fel_val->m = atoi(buff_num);
 	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
@@ -218,6 +218,14 @@ void set_data( struct intergrator_input *fel_val, int line)
 		fel_val->mean_elec = atoi(buff_num);
 	} else if( strcmp( (char*)buff_arg, "pulse_duration") == 0 ) {
 		fel_val->pulse_duration = atof(buff_num);
+	} else if( strcmp( (char*)buff_arg, "theta_shift_start") == 0 ) {
+                boffin_input->pondermotive_shift_start = atof( buff_num );
+	} else if( strcmp( (char*)buff_arg, "theta_shift_interval") == 0 ) {
+                boffin_input->pondermotive_shift_interval = atof( buff_num );
+	} else if( strcmp( (char*)buff_arg, "theta_shift_n") == 0 ) {
+                boffin_input->pondermotive_shift_n_value = atof( buff_num );
+	} else if( strcmp( (char*)buff_arg, "rms_undulator") == 0 ) {
+                boffin_input->a_bar = atof( buff_num );
 	} else {
 		printf("Warning: unknown intput '%s', on line %d\n", buff_arg, line);
 	}

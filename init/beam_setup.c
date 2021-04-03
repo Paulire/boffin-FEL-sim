@@ -9,7 +9,7 @@
 
 #include "init.h"
 
-void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, int ELECTRON_NUM)
+void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restrict user_in, double *restrict z, double **restrict fel_data_matrix, boffin_input_data *restrict boffin_input )
 {
         // For random number gen
         gsl_rng *restrict r;
@@ -17,14 +17,14 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 
 	// Set z = 0 data for z, a and phi
 	z[0] = fel_in->z_0;
-        for( int i=0; i<fel_in->odd_harmonic_num; i++ ) {
+        for( int i=0; i<boffin_input->max_harmonics; i++ ) {
                 fel_data_matrix[ i ][0] = fel_in->a_0*pow( 10, -i*2 );
-                fel_data_matrix[ i+fel_in->odd_harmonic_num ][0] = fel_in->phi_0;
+                fel_data_matrix[ i+boffin_input->max_harmonics ][0] = fel_in->phi_0;
         }
-        
+
 	// Sets z data like a linspace
-	for( int i=0; i<fel_in->z_num; i++) {
-		z[i] = fel_in->z_0+(i)*( fel_in->z_f - fel_in->z_0 )/(fel_in->z_num-1);
+	for( int i=0; i<boffin_input->Z_NUM; i++) {
+		z[i] = fel_in->z_0+(i)*( fel_in->z_f - fel_in->z_0 )/(boffin_input->Z_NUM-1);
 	}
 
         /* Creates a random number between 0 and 1
@@ -61,8 +61,8 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
         }
 
         // Phase space is created from the random numbers
-        double n = (double) ELECTRON_NUM*fel_in->shot_n_val;
-        double sigma = sqrt( (double) 3*n/ELECTRON_NUM );
+        double n = (double) boffin_input->ELECTRON_NUM*fel_in->shot_n_val;
+        double sigma = sqrt( (double) 3*n/boffin_input->ELECTRON_NUM );
         double p_value, theta_value, delta_p, delta_theta, mean_elec_const;
         int i, e;
 
@@ -74,11 +74,11 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 
         }
 
-        for( i=0, e=0; i*fel_in->N_p<ELECTRON_NUM; e++ ) {
+        for( i=0, e=0; i*fel_in->N_p<boffin_input->ELECTRON_NUM; e++ ) {
 
                 int index = i*(fel_in->N_p)+e;
-                int t_indx = 2*fel_in->odd_harmonic_num + index;
-                int p_indx = 2*fel_in->odd_harmonic_num + ELECTRON_NUM+index;
+                int t_indx = 2*boffin_input->max_harmonics + index;
+                int p_indx = 2*boffin_input->max_harmonics + boffin_input->ELECTRON_NUM+index;
 
                 if( user_in->shot_noise_theta == true ) { 
                         if( e == 0 )

@@ -9,13 +9,11 @@ typedef struct intergrator_input {
 	int m;		// Spread can be upto sigma*m
 	double z_0;	// z start
 	double z_f;	// z end
-	int z_num;
 	double a_0;
 	double phi_0;
         double shot_n_val;
         unsigned long int shot_noise_seed;
         double mean_elec;
-        int odd_harmonic_num;
         double pulse_duration;
 } fel_input_values;
 
