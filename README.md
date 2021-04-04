@@ -1,4 +1,4 @@
-# BOFFIN - **B**DF for **O**ne Dimentianal **F**EL **In**tegration
+# BOFFIN - BDF for One dimentianal FEL INtegration
 
 ## Installing
 
