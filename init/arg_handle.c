@@ -116,12 +116,13 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
                         BF->pondermotive_shift_on = true;
 
                 } else {
-			if( strcmp("\0", IF->in_file) != 0 && strcmp(argv[i], IF->in_file) != 0 ) {
+                        if( i == 1 ) {
+                                strcpy( IF->in_file , argv[i]);
+                        } else {
 				char buff[30] = "Unknown argument: ";
 				strcat( buff, argv[i] );
 				__error__( buff );
 			}
-                        strcpy( IF->in_file , argv[i]);
 		}
 	}
 
@@ -129,7 +130,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 	if( IF->plot_only_mode == true )
 		strcpy( IF->out_file, IF->in_file );
         if( IF->plot_only_mode == true && IF->plot == false )
-                __error__( "BOFfIn Requires plot type in Plot Mode" );
+                __error__( "Boffin Requires plot type in Plot Mode" );
 }
 
 
