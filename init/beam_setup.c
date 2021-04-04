@@ -84,7 +84,10 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         if( e == 0 )
                                 theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
 
-                        p_value = e*2*fel_in->sigma/(fel_in->N_p-1) - fel_in->sigma;
+                        if( fel_in->N_p == 1 )
+                                p_value = (double) 0;
+                        else
+                                p_value = e*2*fel_in->sigma/(fel_in->N_p-1) - fel_in->sigma;
 
                 } else if( user_in->shot_noise_both == true ) {
                         double const_buff, U_theta, U_p;
