@@ -215,7 +215,7 @@ void set_data( struct intergrator_input *restrict fel_val, int line, boffin_inpu
 	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
 		fel_val->shot_n_val = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "mean_electron") == 0 ) {
-		fel_val->mean_elec = atoi(buff_num);
+		fel_val->mean_elec = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "pulse_duration") == 0 ) {
 		fel_val->pulse_duration = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "theta_shift_start") == 0 ) {
