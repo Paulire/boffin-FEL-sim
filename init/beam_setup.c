@@ -69,8 +69,8 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
         if( user_in->shot_noise_both == true ) {
                 delta_theta = 2*M_PI/(fel_in->N_theta);
                 delta_p = 2*fel_in->sigma/fel_in->N_p;
-                mean_elec_const = fel_in->mean_elec*( M_2_SQRTPI*M_SQRT2/
-                                                     ( 4*fel_in->sigma*6 ) );
+                mean_elec_const = ( delta_p*delta_theta*fel_in->mean_elec/fel_in->pulse_duration)/
+                                    (M_SQRT2*M_SQRTPI*fel_in->sigma);
                 
         }
 
@@ -95,8 +95,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         double theta_point = i*2*M_PI/fel_in->N_theta + delta_theta/2;
                         double N_j = mean_elec_const*exp(
                                                     -pow( p_point, 2 )/( 2*
-                                                     pow( fel_in->sigma, 2 ) ) )*(
-                                                          delta_theta)*(delta_p)/fel_in->pulse_duration;
+                                                     pow( fel_in->sigma, 2 ) ) );
 
                         const_buff = delta_theta/( 2*sqrt( N_j ) );
                         U_theta = gsl_rng_uniform( r )*2*const_buff - const_buff;
@@ -131,5 +130,6 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
 
         if( user_in->shot_noise == true )
                 gsl_rng_free (r);
+
 }
 
