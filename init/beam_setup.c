@@ -74,12 +74,14 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 
         }
 
+        // Set inital conditions for each electron
         for( i=0, e=0; i*fel_in->N_p<boffin_input->ELECTRON_NUM; e++ ) {
 
                 int index = i*(fel_in->N_p)+e;
                 int t_indx = 2*boffin_input->max_harmonics + index;
                 int p_indx = 2*boffin_input->max_harmonics + boffin_input->ELECTRON_NUM+index;
 
+                // Set data for theta only shot noise
                 if( user_in->shot_noise_theta == true ) { 
                         if( e == 0 )
                                 theta_value = (i/n)*2*M_PI+2*gsl_rng_uniform( r )*sigma;
@@ -89,6 +91,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         else
                                 p_value = e*2*fel_in->sigma/(fel_in->N_p-1) - fel_in->sigma;
 
+                // Set data for theta and p only shot noise
                 } else if( user_in->shot_noise_both == true ) {
                         double const_buff, U_theta, U_p;
                         double p_point = e*2*fel_in->sigma/(fel_in->N_p) + delta_p/2 - fel_in->sigma;
@@ -105,6 +108,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                         theta_value = theta_point + U_theta;
                         p_value = p_point + U_p;
 
+                // Set data for no shot noise
                 } else {
                         if( e == 0 ) {
                                 theta_value = i*2*M_PI/fel_in->N_theta;
@@ -118,6 +122,7 @@ void set_fel_input_data( fel_input_values *restrict fel_in, input_flags *restric
                 }
 
 
+                // Set data for the electron
                 fel_data_matrix[t_indx][0] = (double) theta_value;
                 fel_data_matrix[p_indx][0] = (double) p_value;
 

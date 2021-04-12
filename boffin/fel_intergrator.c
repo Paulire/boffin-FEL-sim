@@ -29,6 +29,7 @@
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 
+// This is the ODEs for solving FEL in 1D and for any number of odd harmonics
 static inline int fel_ode_hth_harmonic( double x, const double y[], double f[], void *restrict params )
 {
 	boffin_input_data *restrict input = params ;
@@ -108,6 +109,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, b
         double h = 1e-6;
 
 
+        // y is an input vector for GSL
 	double *restrict y = (double*) calloc( (2*boffin_input->ELECTRON_NUM+2*boffin_input->max_harmonics ), sizeof(double));
         for( int e=0; e<2*boffin_input->ELECTRON_NUM+2*boffin_input->max_harmonics; e++ ) {
                 y[e] = fel_data_matrix[e][0]; 
@@ -135,7 +137,7 @@ void boffin_solve( double *restrict z_data, double **restrict fel_data_matrix, b
 	        }
         }
 
-        // Fweeee
+        // Freeee
 	free(y);
 	gsl_odeiv_step_free( s );
 	gsl_odeiv_control_free( c );

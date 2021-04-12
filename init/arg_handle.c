@@ -20,7 +20,7 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 		__error__( "No input arguments\n Try boffin --help" );
 	}
 
-	// And input
+	// Set default inputs
 	strcpy( IF->in_file , "\0" ) ;
 	strcpy( IF->out_file , "output.csv" );
 	IF->plot = false;
@@ -37,36 +37,37 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
         BF->max_harmonics = 1;
         BF->pondermotive_shift_on = false;
 
+        // Check each each input
 	for( int i=1; i<argc; i++)
 	{
-		if(strcmp("--help", argv[i]) == 0 ) {
+		if(strcmp("--help", argv[i]) == 0 ) { // Help page
 			info_help( false );
 
-		} else if(strcmp("--HELP", argv[i]) == 0 ) {
+		} else if(strcmp("--HELP", argv[i]) == 0 ) { // Advanced help
 			info_help( true );
 
-		} else if(strcmp("-i", argv[i]) == 0 ) {
+		} else if(strcmp("-i", argv[i]) == 0 ) {        // Input file
 			if( argc == i+1 ) { __error__( "No input file after -i"  ); }
 			strcpy( IF->in_file , argv[i+1] );
 			i++;
 
-		} else if(strcmp("-o", argv[i]) == 0 ) {
+		} else if(strcmp("-o", argv[i]) == 0 ) {        // Output file
 			if( argc == i+1 ) { __error__( "No output file after -o" ); }
 			strcpy( IF->out_file , argv[i+1]);
 			i++;
 		
-		} else if(strcmp("-ap", argv[i]) == 0) {
+		} else if(strcmp("-ap", argv[i]) == 0) {        // Plot a(z)
 			IF->plot = true;
 			IF->plot_a = true;
 
-		} else if(strcmp("-pp", argv[i]) == 0) {
+		} else if(strcmp("-pp", argv[i]) == 0) {        // Plot phi(z0)
 			IF->plot = true;
 			IF->plot_phi = true;
 
-		} else if(strcmp("-plotmode", argv[i]) == 0 ) {
+		} else if(strcmp("-plotmode", argv[i]) == 0 ) { // Just plot an output file but not an input file
 			IF->plot_only_mode = true;
 
-		} else if(strcmp("-pha", argv[i]) == 0 ) {
+		} else if(strcmp("-pha", argv[i]) == 0 ) { // Plot phase space
 			IF->plot = true;
 			IF->plot_phase = true;
 			if( i == argc-1)
@@ -74,25 +75,25 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
 			IF->plot_phase_z = atof(argv[i+1]);
 			i++;
 
-                } else if( strcmp("-bp", argv[i]) == 0 ) {
+                } else if( strcmp("-bp", argv[i]) == 0 ) { // Plot bunching paramiter
                         IF->plot = true;
                         IF->plot_bunch = true;
 
-                }else if(strcmp("-CMDMODE", argv[i]) == 0 ) {
+                }else if(strcmp("-CMDMODE", argv[i]) == 0 ) { // Read file input as a comand line string
 			if( i == argc-1)
 				__error__( "No command line input for -CMDMODE" );
 			IF->cmd_mode = true;
 			strcpy( IF->cmd_input, argv[i+1] );
 			i++;
 
-                } else if( strcmp("-s", argv[i]) == 0 ) {
+                } else if( strcmp("-s", argv[i]) == 0 ) {  // Use theta shot noise 
                         IF->shot_noise = true;
                         IF->shot_noise_theta = true;
 
-                } else if( strcmp("-sa", argv[i]) == 0 ) {
+                } else if( strcmp("-sa", argv[i]) == 0 ) { // Using theta and p shot noise
                         IF->shot_noise = true;
                         IF->shot_noise_both = true;
-                } else if( strcmp("--seed", argv[i]) == 0 ){
+                } else if( strcmp("--seed", argv[i]) == 0 ){ // Set random seed for shot noise
 			if( i == argc-1)
 				__error__( "No command line input for --seed" );
                         IF->shot_noise = true;
@@ -100,19 +101,19 @@ void arg_handle( int argc, char *argv[], fel_input_values *INT_IN, input_flags *
                         INT_IN->shot_noise_seed = strtoul( argv[i+1], (char **)'\0', 10 );
                         i++;
 
-                } else if( strcmp("-h", argv[i]) == 0 ){
+                } else if( strcmp("-h", argv[i]) == 0 ){ // How many harmonics are plotted?
 			if( i == argc-1)
 				__error__( "No command line input for -h" );
                         BF->max_harmonics = atoi( argv[ i+1 ] );
                         i++;
 
-                } else if( strcmp("-hp", argv[i]) == 0 ) {
+                } else if( strcmp("-hp", argv[i]) == 0 ) { // Which harmonic to plot
                         if( i == argc-1 )
                                 __error__( "No command line input for -h" );
                         IF->plot_harmonic = atoi( argv[ i+1 ] );
                         i++;
 
-                } else if( strcmp("-shift", argv[i]) == 0 ) {
+                } else if( strcmp("-shift", argv[i]) == 0 ) { // Using theta shifts
                         BF->pondermotive_shift_on = true;
 
                 } else {

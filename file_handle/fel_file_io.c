@@ -68,12 +68,14 @@ void read_from_config( char *restrict name, struct intergrator_input *restrict f
 
                         break;
 
+                // Check data after =
                 case 0:
                         if( ch == ';' ) {
 
                                 is_arg = 1;
                                 i = -1;
 
+                                // Set input data
                                 set_data( fel_val, line_no, boffin_input );
 
                                 memset(&buff_arg[0], '\0', sizeof(buff_arg));
