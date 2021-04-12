@@ -143,9 +143,16 @@ static inline void info_help( bool advanced )
 	printf(" -o\t data output file (csv)\n\t");
 	printf(" -ap\t plot a(z) values\n\t");
 	printf(" -pp\t plot phi(z) values\n\t");
-	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n");
-	printf(" -plotmode\t Will only plot and not run the simulation. Note: the input file is only valed.\n");
-	printf(" -CMDMODE\t enerer CMD input mode\n");
+	printf(" -pha\t [z] plot phase space at z value (NOT YET IMPLEMENTED)\n\t");
+	printf(" -bp\t Plot the bunching paramiter\n\t");
+	printf(" -hp\t [h] Plot for a certain harmonic (only works if -h flag used while running boffin)\n\t");
+	printf(" -plotmode\t Will only plot and not run the simulation. Note: the input file is only valed.\n\t");
+	printf(" -CMDMODE\t enerer CMD input mode\n\t");
+	printf(" -s\t Run with shot noise in pondermotive phase\n\t");
+	printf(" -sa\t Run with shot noise in pondermotive phase and in p\n\t");
+	printf(" -h [n]\t Number of harmonics to model. n = 1 implies first harmonic; n = 2 implies first and thrid harmonic; etc.\n\t");
+	printf(" -shift\t Have a shift in the pondermotive phase, exact condtions defined in input file\n\t");
+	printf(" --seed\t Set shot_noise seed if needed\n\n");
 
 	if( advanced == false ) {
 		printf("\n Use --HELP for more details\n");
@@ -155,39 +162,18 @@ static inline void info_help( bool advanced )
 		printf(" N_theta The number of theta points between 0 and 2pi.\n\t");
 		printf(" N_p\t The number of points between +/-m*sigma.\n\t");
 		printf(" sigma\t Energy spread veriance\n\t");
-		printf(" off_p\t Mean energy offset\n\t");
+		printf(" off_p\t Mean energy offset - not actully set!\n\t");
 		printf(" a_0\t Inital a value\n\t");
 		printf(" z_0\t Inital z value\n\t");
 		printf(" z_f\t Final z value\n\t");
-		printf(" z_num\t Number of points between z_0 and z_f\n\n");
-                printf(" shot_noise\t 1 or zero");
-                printf(" seed\t if a seed is not set then one will be created");
-		printf(" How to use boffin:\n ");
-		printf("  Users can interact with boffin via an input file and comand line\n");
-		printf(" arguments. The input file's syntax was outlined above. The following is an\n" );
-		printf(" example of how to use boffin. It should be noted that all commands contain\n" );
-		printf(" an '=' and are ended by a ';'\n\n");
-		printf(" ############### input_file.bffn ############### \n");
-		printf("  N_theta=1000;\n");
-		printf("  phi_0=0;\n");
-		printf("  a_0=0.00001;\n");
-		printf("  z_f=20;\n");
-		printf("  z_0=0;\n");
-		printf("  z_num = 1000;\n");
-		printf("  N_p = 1;\n");
-                printf("  shot_noise = 0 ");
-		printf(" ############################################### \n\n");
-		printf(" This is the code for a cold beam. All commands which aren't stated are\n");
-		printf(" assumed (here off_p would be assumed to be 0. The following command will\n");
-		printf(" run the model for the above code and display that a-z plot:\n\n");
-		printf("\t $ boffin -i input_file.bffn -o out_data.csv -ap \n\n");
-		printf(" The output data will be put in the file ./output.csv in the runtime\n");
-		printf(" direcory. The graph will be pushed to the main output display.\n\n");
-		
-		printf(" CMD Input Mode:\n");
-		printf(" eg\n");
-		printf(" \t $ boffin -o output.csv -CMDMODE \"N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;\" -ap\n\n");
-		printf(" For licenceing data use --licensing\n");
+		printf(" z_num\t Number of points between z_0 and z_f\n\t");
+		printf(" shot_n_coff\t Shot noise n coaficant (-s flag only)\n\t");
+		printf(" mean_electron\t Macroparticle mean electron number (-sa flag only)\n\t");
+		printf(" pulse_duration\t Pulse duration (-sa flag only)\n\t");
+		printf(" rms_undulator\t Route mean squared of the undulator paramiter (-h flag greater that 1 must be used)\n\t");
+		printf(" theta_shift_start\t Start of pondermotive phase shift (-shift flag only)\n\t");
+		printf(" theta_shift_interval\t Interval between phase shifts (-shift flag only)\n\t");
+		printf(" theta_shift_interval\t n value for harmomic generation 2pi/n => nth harmonic to be amplified\n");
 		///////////////////////////////////////////////////////////////////////////////////
 	}
 
