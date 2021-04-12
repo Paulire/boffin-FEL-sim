@@ -1,4 +1,4 @@
-# BOFfIn - BDF One dimentianal FEL INtergrator
+# BOFFIN - BDF for One dimentianal FEL INtegration
 
 ## Installing
 
@@ -30,9 +30,15 @@ NOTE: this has only be tested on a Debian distrobution, edit the ''install'' fil
  * -s  runs simulation with shot noise
  * -ap  plot a(z) values
  * -pp plot phi(z) values
- * -pha [z] plot phase space at z value 
- * -plotmode	 Will only plot and not run the simulation. Note: the input file is only valed
+ * -pha [z]  plot phase space at z value 
+ * -bp       Plot the bunching paramiter
+ * -hp [h]   Plot for a certain harmonic (only works if -h flag used while running boffin)
+ * -plotmode	Will only plot and not run the simulation. Note: the input file is only valed
  * -CMDMODE  enerer CMD input mode
+ * -s        Run with shot noise in pondermotive phase
+ * -sa       Run with shot noise in pondermotive phase and in p
+ * -h [n]    Number of harmonics to model. n = 1 implies first harmonic; n = 2 implies first and thrid harmonic; etc.
+ * -shift    Have a shift in the pondermotive phase, exact condtions defined in input file
  
  Input File Syntax:
  COMMAND = VALUE;
@@ -44,29 +50,17 @@ NOTE: this has only be tested on a Debian distrobution, edit the ''install'' fil
  * ```z_0```      Inital z value
  * ```z_f```      Final z value
  * ```z_num```    Number of points between z_0 and z_f
- * ```shot_n_coff```    Shot noise n coaficant
+ * ```shot_n_coff```    Shot noise n coaficant (-s flag only)
+ * ```mean_electron```    Macroparticle mean electron number (-sa flag only)
+ * ```pulse_duration```    Pulse duration (-sa flag only)
+ * ```rms_undulator```     Route mean squared of the undulator paramiter (-h flag greater that 1 must be used)
+ * ```theta_shift_start``` Start of pondermotive phase shift (-shift flag only)
+ * ```theta_shift_interval``` Interval between phase shifts (-shift flag only)
+ * ```theta_shift_interval``` n value for harmomic generation 2pi/n => nth harmonic to be amplified
 
 Users can interact with boffin via an input file and comand line
 arguments. The input file's syntax was outlined above. The following is an
 example of how to use boffin. It should be noted that all commands contain
 an '=' and are ended by a ';'
 
-**input_file.bffn**
-```
-N_theta=1000;
-phi_0=0;
-a_0=0.00001;
-z_f=20;
-z_0=0;
-z_num = 1000;
-N_p = 1;
-shot_noise = 0
-```
-
-This is run in the terminal:
-
-     $ boffin -i input_file.bffn -o out_data.csv -ap
-
-A user can bypass the input file and use CMDMODE:
-
-     $ boffin -o output.csv -CMDMODE "N_theta=100; phi_0=0; a_0=0.001;z_f=15;z_0=0;z_num = 1000;N_p = 1;" -ap
+Examples are avalibale in the example folder (TO BE MADE)

@@ -68,12 +68,14 @@ void read_from_config( char *restrict name, struct intergrator_input *restrict f
 
                         break;
 
+                // Check data after =
                 case 0:
                         if( ch == ';' ) {
 
                                 is_arg = 1;
                                 i = -1;
 
+                                // Set input data
                                 set_data( fel_val, line_no, boffin_input );
 
                                 memset(&buff_arg[0], '\0', sizeof(buff_arg));
@@ -215,7 +217,7 @@ void set_data( struct intergrator_input *restrict fel_val, int line, boffin_inpu
 	} else if( strcmp( (char*)buff_arg, "shot_n_coff") == 0 ) {
 		fel_val->shot_n_val = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "mean_electron") == 0 ) {
-		fel_val->mean_elec = atoi(buff_num);
+		fel_val->mean_elec = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "pulse_duration") == 0 ) {
 		fel_val->pulse_duration = atof(buff_num);
 	} else if( strcmp( (char*)buff_arg, "theta_shift_start") == 0 ) {

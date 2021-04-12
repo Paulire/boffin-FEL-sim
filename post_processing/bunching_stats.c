@@ -33,14 +33,15 @@ static inline void calc_bunching_parameter( struct intergrator_input *restrict I
         
         // Normilisation factor S
         for( i=0; i<IN->N_p; i++ ) {
-                s += exp( -0.5*pow( fel_data_matrix[ 2*( 1+h )+i+boffin_input->ELECTRON_NUM ][0]/IN->sigma, 2 ) );
+                s += exp( -0.5*pow( fel_data_matrix[ 2*boffin_input->max_harmonics+i+boffin_input->ELECTRON_NUM ][0]/IN->sigma, 2 ) );
         }
 
         // 'i' is points in z, 'j' is electrion index
         for( i=0, j=0; i<boffin_input->ELECTRON_NUM; j++ ) {
                 // Weighted function g_j for each particle
-                g_j = exp( -0.5*pow( fel_data_matrix[ 2*( 1+h )+j+boffin_input->ELECTRON_NUM ][0]/IN->sigma, 2 ) )/s;
-                b_n_temp = gsl_complex_add( b_n_temp, gsl_complex_polar( g_j, -fel_data_matrix[2*( 1+h )+j][i]/( (double) 1+2*h ) ) );
+                g_j = exp( -0.5*pow( fel_data_matrix[ 2*boffin_input->max_harmonics+j+boffin_input->ELECTRON_NUM ][0]/IN->sigma, 2 ) )/s;
+                b_n_temp = gsl_complex_add( b_n_temp, gsl_complex_polar( g_j, -fel_data_matrix[2*boffin_input->max_harmonics+j][i]*( (double) 1+2*h ) ) );
+
                 // After all particles in z are accounted, set bunching paramiter and reset
                 if( j == boffin_input->ELECTRON_NUM-1 ) {
                         b_n_temp = gsl_complex_mul( gsl_complex_polar( (double) 1/IN->N_theta,0) , b_n_temp );
