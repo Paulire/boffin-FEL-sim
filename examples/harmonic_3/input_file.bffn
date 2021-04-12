@@ -1,0 +1,23 @@
+# 1000 particles through theta and p
+N_theta=50;
+N_p = 20;
+sigma = 0.1;
+
+# Wave starts with 0 phase and a moderate inital field
+a_0=0.0000000000000000000000001;
+phi_0=0;
+
+# Length of interaction and number of sample points
+z_0=0;
+z_f=30;
+z_num = 1000;
+
+# Data for shot noise
+mean_electron=100000;
+pulse_duration=4;
+
+# Data to allow third harmonic and for harmonic generation
+theta_shift_start=2.0;
+theta_shift_interval=0.5;
+theta_shift_n=3;
+rms_undulator = 4;
